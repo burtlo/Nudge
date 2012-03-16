@@ -35,11 +35,24 @@
 
 - (id)initWithFrame:(CGRect)frame dataSource:(id<QuadCurveDataSourceDelegate>)dataSource;
 
+- (void)expandMenu;
+- (void)closeMenu;
+
 @end
 
 @protocol QuadCurveMenuDelegate <NSObject>
+
+@optional
+
+- (void)quadCurveMenu:(QuadCurveMenu *)menu didBeginTouchingMenu:(QuadCurveMenuItem *)mainMenuItem;
+- (void)quadCurveMenu:(QuadCurveMenu *)menu didEndTouchingMenu:(QuadCurveMenuItem *)mainMenuItem;
+
+- (BOOL)quadCurveMenuShouldExpand:(QuadCurveMenu *)menu;
+- (BOOL)quadCurveMenuShouldClose:(QuadCurveMenu *)menu;
+
 - (void)quadCurveMenu:(QuadCurveMenu *)menu didBeginTouching:(QuadCurveMenuItem *)menuItem;
 - (void)quadCurveMenu:(QuadCurveMenu *)menu didEndTouching:(QuadCurveMenuItem *)menuItem;
+
 @end
 
 @protocol QuadCurveDataSourceDelegate <NSObject>

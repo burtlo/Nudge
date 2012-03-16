@@ -144,8 +144,7 @@ static CGPoint RotateCGPointAroundCenter(CGPoint point, CGPoint center, float an
     }
 }
 
-- (void)touchesBegan:(NSSet *)touches withEvent:(UIEvent *)event
-{
+- (void)touchesBegan:(NSSet *)touches withEvent:(UIEvent *)event {
     self.expanding = !self.isExpanding;
 }
 
@@ -153,10 +152,32 @@ static CGPoint RotateCGPointAroundCenter(CGPoint point, CGPoint center, float an
 
 - (void)quadCurveMenuItemTouchesBegan:(QuadCurveMenuItem *)item {
     
-    if (item == _addButton) 
-    {
-        self.expanding = !self.isExpanding;
-        // TODO: Did touch main menu event
+    if (item == _addButton) {
+        
+        if ([self delegate] && [[self delegate] respondsToSelector:@selector(quadCurveMenu:didBeginTouchingMenu:)]) {
+            [[self delegate] quadCurveMenu:self didBeginTouchingMenu:_addButton];
+        }
+        
+        BOOL willBeExpandingMenu = ![self isExpanding];
+        BOOL shouldPerformAction = YES;
+        
+        if (willBeExpandingMenu && [self delegate] && [[self delegate] respondsToSelector:@selector(quadCurveMenuShouldExpand:)]) {
+            
+            shouldPerformAction = [[self delegate] quadCurveMenuShouldExpand:self];
+        }
+
+        if ( ! willBeExpandingMenu && [self delegate] && [[self delegate] respondsToSelector:@selector(quadCurveMenuShouldClose:)]) {
+            
+            shouldPerformAction = [[self delegate] quadCurveMenuShouldClose:self];
+        }
+
+        if (shouldPerformAction) {
+                          
+            [self setExpanding:willBeExpandingMenu];
+            
+        }
+        
+        
     } else {
     
         if ([self delegate] && [[self delegate] respondsToSelector:@selector(quadCurveMenu:didBeginTouching:)]) {
@@ -167,11 +188,16 @@ static CGPoint RotateCGPointAroundCenter(CGPoint point, CGPoint center, float an
 }
 
 - (void)quadCurveMenuItemTouchesEnd:(QuadCurveMenuItem *)item {
-    // exclude the "add" button
-    if (item == _addButton) 
-    {
+    
+    if (item == _addButton) {
+        
+        if ([self delegate] && [[self delegate] respondsToSelector:@selector(quadCurveMenu:didEndTouchingMenu:)]) {
+            [[self delegate] quadCurveMenu:self didEndTouchingMenu:_addButton];
+        }
+
         return;
     }
+    
     // blowup the selected menu button
     CAAnimationGroup *blowup = [self _blowupAnimationAtPoint:item.center];
     [item.layer addAnimation:blowup forKey:@"blowup"];
@@ -200,6 +226,21 @@ static CGPoint RotateCGPointAroundCenter(CGPoint point, CGPoint center, float an
     if ([self delegate] && [[self delegate] respondsToSelector:@selector(quadCurveMenu:didEndTouching:)]) {
         [[self delegate] quadCurveMenu:self didEndTouching:item];
     }
+}
+
+#pragma mark 
+
+- (void)expandMenu {
+    if (![self isExpanding]) {
+        [self setExpanding:YES];
+    }
+}
+
+- (void)closeMenu {
+    if ([self isExpanding]) {
+        [self setExpanding:NO];
+    }
+    
 }
 
 #pragma mark

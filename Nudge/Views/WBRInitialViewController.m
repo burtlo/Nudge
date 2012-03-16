@@ -111,4 +111,21 @@
     NSLog(@"Did Select An Item");
 }
 
+- (void)quadCurveMenu:(QuadCurveMenu *)menu didBeginTouchingMenu:(QuadCurveMenuItem *)mainMenuItem {
+    NSLog(@"Begin Touched the Main Menu");
+}
+
+- (void)quadCurveMenu:(QuadCurveMenu *)menu didEndTouchingMenu:(QuadCurveMenuItem *)mainMenuItem {
+    NSLog(@"End Touched the Main Menu");    
+}
+
+- (BOOL)quadCurveMenuShouldExpand:(QuadCurveMenu *)menu {
+    return YES;
+}
+
+- (BOOL)quadCurveMenuShouldClose:(QuadCurveMenu *)menu {
+    return YES;
+}
+
+
 @end
