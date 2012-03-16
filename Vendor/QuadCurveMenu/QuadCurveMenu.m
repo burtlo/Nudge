@@ -18,7 +18,6 @@ static CGFloat const kQuadCurveMenuDefaultTimeOffset = 0.036f;
 static CGFloat const kQuadCurveMenuDefaultRotateAngle = 0.0;
 static CGFloat const kQuadCurveMenuDefaultMenuWholeAngle = M_PI * 2;
 
-
 static CGPoint RotateCGPointAroundCenter(CGPoint point, CGPoint center, float angle)
 {
     CGAffineTransform translation = CGAffineTransformMakeTranslation(center.x, center.y);
@@ -34,6 +33,14 @@ static CGPoint RotateCGPointAroundCenter(CGPoint point, CGPoint center, float an
     
     id<QuadCurveMenuDelegate> _delegate;
     id<QuadCurveDataSourceDelegate> dataSource_;
+    
+    BOOL delegateHasDidBeginTouchingMenu;
+    BOOL delegateHasDidEndTouchingMenu;
+    BOOL delegateHasShouldExpand;
+    BOOL delegateHasShouldClose;
+    BOOL delegateHasDidBeginTouching;
+    BOOL delegateHasDidEndTouching;
+    
 }
 
 - (void)_expand;
@@ -47,11 +54,12 @@ static CGPoint RotateCGPointAroundCenter(CGPoint point, CGPoint center, float an
 @implementation QuadCurveMenu
 
 @synthesize nearRadius, endRadius, farRadius, timeOffset, rotateAngle, menuWholeAngle, startPoint;
+
 @synthesize expanding = _expanding;
 @synthesize delegate = _delegate;
 @synthesize dataSource = dataSource_;
 
-#pragma mark - initialization & cleaning up
+#pragma mark - Initialization
 
 - (id)initWithFrame:(CGRect)frame dataSource:(id<QuadCurveDataSourceDelegate>)dataSource {
     
@@ -59,17 +67,16 @@ static CGPoint RotateCGPointAroundCenter(CGPoint point, CGPoint center, float an
     if (self) {
         self.backgroundColor = [UIColor clearColor];
 		
-		self.nearRadius = kQuadCurveMenuDefaultNearRadius;
-		self.endRadius = kQuadCurveMenuDefaultEndRadius;
-		self.farRadius = kQuadCurveMenuDefaultFarRadius;
-		self.timeOffset = kQuadCurveMenuDefaultTimeOffset;
-		self.rotateAngle = kQuadCurveMenuDefaultRotateAngle;
-		self.menuWholeAngle = kQuadCurveMenuDefaultMenuWholeAngle;
-		self.startPoint = CGPointMake(kQuadCurveMenuDefaultStartPointX, kQuadCurveMenuDefaultStartPointY);
+		[self setNearRadius:kQuadCurveMenuDefaultNearRadius];
+		[self setEndRadius:kQuadCurveMenuDefaultEndRadius];
+		[self setFarRadius:kQuadCurveMenuDefaultFarRadius];
+		[self setTimeOffset:kQuadCurveMenuDefaultTimeOffset];
+		[self setRotateAngle:kQuadCurveMenuDefaultRotateAngle];
+		[self setMenuWholeAngle:kQuadCurveMenuDefaultMenuWholeAngle];
+        [self setStartPoint:CGPointMake(kQuadCurveMenuDefaultStartPointX, kQuadCurveMenuDefaultStartPointY)];
         
         [self setDataSource:dataSource];
         
-        // add the "Add" Button.
         _addButton = [[QuadCurveMenuItem alloc] initWithImage:nil
                                        highlightedImage:nil 
                                            ContentImage:[UIImage imageNamed:@"icon-plus.png"] 
@@ -82,15 +89,34 @@ static CGPoint RotateCGPointAroundCenter(CGPoint point, CGPoint center, float an
     return self;
 }
 
+#pragma mark - Deallocation
+
 - (void)dealloc
 {
     [_addButton release];
     [super dealloc];
 }
 
+#pragma mark - Event Delegate
+
+- (void)setDelegate:(id<QuadCurveMenuDelegate>)delegate {
+    
+    if (delegate == nil) { return; }
+    
+    delegateHasDidBeginTouchingMenu = [delegate respondsToSelector:@selector(quadCurveMenu:didBeginTouchingMenu:)];
+    delegateHasDidEndTouchingMenu = [delegate respondsToSelector:@selector(quadCurveMenu:didEndTouchingMenu:)];
+    delegateHasShouldExpand = [delegate respondsToSelector:@selector(quadCurveMenuShouldExpand:)];
+    delegateHasShouldClose = [delegate respondsToSelector:@selector(quadCurveMenuShouldClose:)];
+    delegateHasDidBeginTouching = [delegate respondsToSelector:@selector(quadCurveMenu:didBeginTouching:)];
+    delegateHasDidEndTouching = [delegate respondsToSelector:@selector(quadCurveMenu:didEndTouching:)];
+    
+    [self willChangeValueForKey:@"delegate"];
+    _delegate = delegate;
+    [self didChangeValueForKey:@"delegate"];
+}
+
 
 #pragma mark - images
-
 
 - (void)setImage:(UIImage *)image {
 	_addButton.image = image;
@@ -129,15 +155,14 @@ static CGPoint RotateCGPointAroundCenter(CGPoint point, CGPoint center, float an
 
                                
 #pragma mark - UIView's methods
+
 - (BOOL)pointInside:(CGPoint)point withEvent:(UIEvent *)event {
     // if the menu state is expanding, everywhere can be touch
     // otherwise, only the add button are can be touch
-    if (YES == _expanding) 
-    {
+    if (YES == _expanding) {
         return YES;
     }
-    else
-    {
+    else {
         CGRect buttonFrame = CGRectOffset(_addButton.contentImageView.frame, _addButton.center.x, _addButton.center.y);
         BOOL touchResult = CGRectContainsPoint(buttonFrame, point);
         return touchResult;
@@ -154,33 +179,29 @@ static CGPoint RotateCGPointAroundCenter(CGPoint point, CGPoint center, float an
     
     if (item == _addButton) {
         
-        if ([self delegate] && [[self delegate] respondsToSelector:@selector(quadCurveMenu:didBeginTouchingMenu:)]) {
+        if (delegateHasDidBeginTouchingMenu) {
             [[self delegate] quadCurveMenu:self didBeginTouchingMenu:_addButton];
         }
         
         BOOL willBeExpandingMenu = ![self isExpanding];
         BOOL shouldPerformAction = YES;
         
-        if (willBeExpandingMenu && [self delegate] && [[self delegate] respondsToSelector:@selector(quadCurveMenuShouldExpand:)]) {
-            
+        if (willBeExpandingMenu && delegateHasShouldExpand) {
             shouldPerformAction = [[self delegate] quadCurveMenuShouldExpand:self];
         }
 
-        if ( ! willBeExpandingMenu && [self delegate] && [[self delegate] respondsToSelector:@selector(quadCurveMenuShouldClose:)]) {
-            
+        if ( ! willBeExpandingMenu && delegateHasShouldClose) {
             shouldPerformAction = [[self delegate] quadCurveMenuShouldClose:self];
         }
 
         if (shouldPerformAction) {
-                          
             [self setExpanding:willBeExpandingMenu];
-            
         }
         
         
     } else {
     
-        if ([self delegate] && [[self delegate] respondsToSelector:@selector(quadCurveMenu:didBeginTouching:)]) {
+        if (delegateHasDidBeginTouching) {
             [[self delegate] quadCurveMenu:self didBeginTouching:item];
         }
         
@@ -191,7 +212,7 @@ static CGPoint RotateCGPointAroundCenter(CGPoint point, CGPoint center, float an
     
     if (item == _addButton) {
         
-        if ([self delegate] && [[self delegate] respondsToSelector:@selector(quadCurveMenu:didEndTouchingMenu:)]) {
+        if (delegateHasDidEndTouchingMenu) {
             [[self delegate] quadCurveMenu:self didEndTouchingMenu:_addButton];
         }
 
@@ -223,7 +244,7 @@ static CGPoint RotateCGPointAroundCenter(CGPoint point, CGPoint center, float an
         _addButton.transform = CGAffineTransformMakeRotation(angle);
     }];
     
-    if ([self delegate] && [[self delegate] respondsToSelector:@selector(quadCurveMenu:didEndTouching:)]) {
+    if (delegateHasDidEndTouching) {
         [[self delegate] quadCurveMenu:self didEndTouching:item];
     }
 }
