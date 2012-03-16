@@ -71,11 +71,14 @@ highlightedContentImage:(UIImage *)hcimg;
 }
 
 - (BOOL)pointInside:(CGPoint)point withEvent:(UIEvent *)event {
-    return [super pointInside:point withEvent:event];
+    
+    CGRect buttonFrame = self.contentImageView.frame;
+    BOOL touchResult = CGRectContainsPoint(buttonFrame, point);
+    return touchResult;
 }
 
-- (void)touchesBegan:(NSSet *)touches withEvent:(UIEvent *)event
-{
+- (void)touchesBegan:(NSSet *)touches withEvent:(UIEvent *)event {
+    
     self.highlighted = YES;
     if ([_delegate respondsToSelector:@selector(quadCurveMenuItemTouchesBegan:)])
     {
@@ -83,22 +86,21 @@ highlightedContentImage:(UIImage *)hcimg;
     }
     
 }
-- (void)touchesMoved:(NSSet *)touches withEvent:(UIEvent *)event
-{
+
+- (void)touchesMoved:(NSSet *)touches withEvent:(UIEvent *)event {
     // if move out of 2x rect, cancel highlighted.
     CGPoint location = [[touches anyObject] locationInView:self];
-    if (!CGRectContainsPoint(ScaleRect(self.bounds, 2.0f), location))
+    if (!CGRectContainsPoint(ScaleRect(self.contentImageView.bounds, 2.0f), location))
     {
         self.highlighted = NO;
     }
     
 }
-- (void)touchesEnded:(NSSet *)touches withEvent:(UIEvent *)event
-{
+- (void)touchesEnded:(NSSet *)touches withEvent:(UIEvent *)event {
     self.highlighted = NO;
     // if stop in the area of 2x rect, response to the touches event.
     CGPoint location = [[touches anyObject] locationInView:self];
-    if (CGRectContainsPoint(ScaleRect(self.bounds, 2.0f), location))
+    if (CGRectContainsPoint(ScaleRect(self.contentImageView.bounds, 2.0f), location))
     {
         if ([_delegate respondsToSelector:@selector(quadCurveMenuItemTouchesEnd:)])
         {

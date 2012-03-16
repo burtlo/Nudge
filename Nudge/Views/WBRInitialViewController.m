@@ -48,7 +48,8 @@
 
     [facebookUsersMenu setContentImage:[UIImage imageNamed:@"facebook.png"]];
     [facebookUsersMenu setHighlightedContentImage:[UIImage imageNamed:@"facebook.png"]];
-
+    [facebookUsersMenu setDelegate:self];
+    
     [[self view] addSubview:facebookUsersMenu];
     
     
@@ -99,6 +100,15 @@
 - (void)request:(FBRequest *)request didFailWithError:(NSError *)error {
     NSLog(@"error");
     
+}
+
+#pragma mark - QuadCoreMenuDelegate
+
+- (void)quadCurveMenu:(QuadCurveMenu *)menu didBeginTouching:(QuadCurveMenuItem *)menuItem {
+    NSLog(@"Starting Touching An Item");
+}
+- (void)quadCurveMenu:(QuadCurveMenu *)menu didEndTouching:(QuadCurveMenuItem *)menuItem {
+    NSLog(@"Did Select An Item");
 }
 
 @end

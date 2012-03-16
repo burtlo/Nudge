@@ -152,9 +152,17 @@ static CGPoint RotateCGPointAroundCenter(CGPoint point, CGPoint center, float an
 #pragma mark - QuadCurveMenuItem delegates
 
 - (void)quadCurveMenuItemTouchesBegan:(QuadCurveMenuItem *)item {
+    
     if (item == _addButton) 
     {
         self.expanding = !self.isExpanding;
+        // TODO: Did touch main menu event
+    } else {
+    
+        if ([self delegate] && [[self delegate] respondsToSelector:@selector(quadCurveMenu:didBeginTouching:)]) {
+            [[self delegate] quadCurveMenu:self didBeginTouching:item];
+        }
+        
     }
 }
 
@@ -189,9 +197,8 @@ static CGPoint RotateCGPointAroundCenter(CGPoint point, CGPoint center, float an
         _addButton.transform = CGAffineTransformMakeRotation(angle);
     }];
     
-    if ([_delegate respondsToSelector:@selector(quadCurveMenu:didSelectIndex:)])
-    {
-        [_delegate quadCurveMenu:self didSelectIndex:item.tag - 1000];
+    if ([self delegate] && [[self delegate] respondsToSelector:@selector(quadCurveMenu:didEndTouching:)]) {
+        [[self delegate] quadCurveMenu:self didEndTouching:item];
     }
 }
 
@@ -201,9 +208,14 @@ static CGPoint RotateCGPointAroundCenter(CGPoint point, CGPoint center, float an
     
 	int count = [[self dataSource] numberOfMenuItems];
     
-    for (int i = 0; i < count; i ++)
-    {
-        QuadCurveMenuItem *item = [[self dataSource] menuItemAtIndex:i];
+    for (int i = 0; i < count; i ++) {
+        
+        QuadCurveMenuItem *item = (QuadCurveMenuItem *)[self viewWithTag:(1000 + i)];
+        
+        if (item) { continue; }
+        
+        item = [[self dataSource] menuItemAtIndex:i];
+        
         item.tag = 1000 + i;
         item.startPoint = startPoint;
         CGPoint endPoint = CGPointMake(startPoint.x + endRadius * sinf(i * menuWholeAngle / count), startPoint.y - endRadius * cosf(i * menuWholeAngle / count));
@@ -328,6 +340,7 @@ static CGPoint RotateCGPointAroundCenter(CGPoint point, CGPoint center, float an
     [item.layer addAnimation:animationgroup forKey:@"Close"];
     item.center = item.startPoint;
     _flag --;
+    
 }
 
 - (CAAnimationGroup *)_blowupAnimationAtPoint:(CGPoint)p {

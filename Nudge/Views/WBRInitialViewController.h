@@ -8,7 +8,7 @@
 
 #import "QuadCurveMenu.h"
 
-@interface WBRInitialViewController : UIViewController <FBRequestDelegate>
+@interface WBRInitialViewController : UIViewController <FBRequestDelegate,QuadCurveMenuDelegate>
 
 - (IBAction)launchFacebook:(id)sender;
 @end

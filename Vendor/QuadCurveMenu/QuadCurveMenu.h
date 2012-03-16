@@ -38,7 +38,8 @@
 @end
 
 @protocol QuadCurveMenuDelegate <NSObject>
-- (void)quadCurveMenu:(QuadCurveMenu *)menu didSelectIndex:(NSInteger)idx;
+- (void)quadCurveMenu:(QuadCurveMenu *)menu didBeginTouching:(QuadCurveMenuItem *)menuItem;
+- (void)quadCurveMenu:(QuadCurveMenu *)menu didEndTouching:(QuadCurveMenuItem *)menuItem;
 @end
 
 @protocol QuadCurveDataSourceDelegate <NSObject>
