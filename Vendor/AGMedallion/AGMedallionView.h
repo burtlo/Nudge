@@ -21,7 +21,7 @@
 
 #import <UIKit/UIKit.h>
 
-@interface AGMedallionView : UIControl
+@interface AGMedallionView : UIView
 {
     UIImage *image;
     UIColor *borderColor;
@@ -31,15 +31,17 @@
     CGFloat shadowBlur;
     
     // Private
-    UIControl *touchableControl;
     CGGradientRef alphaGradient;
 }
 
 @property (nonatomic, retain) UIImage *image;
+@property (nonatomic, retain) UIImage *highlightedImage;
 @property (nonatomic, retain) UIColor *borderColor;
 @property (nonatomic, assign) CGFloat borderWidth;
 @property (nonatomic, retain) UIColor *shadowColor;
 @property (nonatomic, assign) CGSize shadowOffset;
 @property (nonatomic, assign) CGFloat shadowBlur;
+
+@property (nonatomic, assign) BOOL highlighted;
 
 @end

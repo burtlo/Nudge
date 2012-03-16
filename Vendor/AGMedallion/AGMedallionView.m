@@ -31,7 +31,9 @@
 
 #pragma mark - Properties
 
-@synthesize image, borderColor, borderWidth, shadowColor, shadowOffset, shadowBlur;
+@synthesize image, highlightedImage;
+@synthesize highlighted;
+@synthesize borderColor, borderWidth, shadowColor, shadowOffset, shadowBlur;
 
 - (void)setImage:(UIImage *)aImage
 {
@@ -98,7 +100,6 @@
     [image release];
     [borderColor release];
     [shadowColor release];
-    [touchableControl release];
     
     // Release the alpha gradient
     CGGradientRelease(alphaGradient);
@@ -118,9 +119,10 @@
     self.backgroundColor = [UIColor clearColor];
 }
 
-- (id)init
-{
-    return [self initWithFrame:CGRectMake(0, 0, 128.f, 128.f)];
+- (id)init {
+    self = [self initWithFrame:CGRectMake(0, 0, 128.f, 128.f)];
+    return self;
+    
 }
 
 - (id)initWithCoder:(NSCoder *)aDecoder
@@ -214,7 +216,9 @@
     CGContextRef contextRef = UIGraphicsGetCurrentContext();
     CGContextSaveGState(contextRef);
     
-    CGImageRef imageRef = CGImageCreateWithMask(self.image.CGImage, mainMaskImageRef);
+    UIImage *currentImage = (self.highlighted ? self.highlightedImage : self.image);
+    
+    CGImageRef imageRef = CGImageCreateWithMask(currentImage.CGImage, mainMaskImageRef);
     
     CGContextTranslateCTM(contextRef, 0, rect.size.height);
     CGContextScaleCTM(contextRef, 1.0, -1.0);

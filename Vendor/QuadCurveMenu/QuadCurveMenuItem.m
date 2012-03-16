@@ -7,10 +7,11 @@
 //
 
 #import "QuadCurveMenuItem.h"
+
 static inline CGRect ScaleRect(CGRect rect, float n) {return CGRectMake((rect.size.width - rect.size.width * n)/ 2, (rect.size.height - rect.size.height * n) / 2, rect.size.width * n, rect.size.height * n);}
 
 @interface QuadCurveMenuItem () {
-    UIImageView *_contentImageView;
+    AGMedallionView *_contentImageView;
     CGPoint _startPoint;
     CGPoint _endPoint;
     CGPoint _nearPoint; // near
@@ -42,8 +43,11 @@ highlightedContentImage:(UIImage *)hcimg;
         self.image = img;
         self.highlightedImage = himg;
         self.userInteractionEnabled = YES;
-        _contentImageView = [[UIImageView alloc] initWithImage:cimg];
-        _contentImageView.highlightedImage = hcimg;
+        
+        _contentImageView = [[AGMedallionView alloc] init];
+        [_contentImageView setImage:cimg];
+        [_contentImageView setHighlightedImage:hcimg];
+        
         [self addSubview:_contentImageView];
     }
     return self;
@@ -55,8 +59,8 @@ highlightedContentImage:(UIImage *)hcimg;
     [super dealloc];
 }
 #pragma mark - UIView's methods
-- (void)layoutSubviews
-{
+
+- (void)layoutSubviews {
     [super layoutSubviews];
     
     self.bounds = CGRectMake(0, 0, self.image.size.width, self.image.size.height);
@@ -64,6 +68,10 @@ highlightedContentImage:(UIImage *)hcimg;
     float width = _contentImageView.image.size.width;
     float height = _contentImageView.image.size.height;
     _contentImageView.frame = CGRectMake(self.bounds.size.width/2 - width/2, self.bounds.size.height/2 - height/2, width, height);
+}
+
+- (BOOL)pointInside:(CGPoint)point withEvent:(UIEvent *)event {
+    return [super pointInside:point withEvent:event];
 }
 
 - (void)touchesBegan:(NSSet *)touches withEvent:(UIEvent *)event

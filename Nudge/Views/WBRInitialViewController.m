@@ -46,12 +46,9 @@
     facebookUsersMenu = [[QuadCurveMenu alloc] initWithFrame:CGRectMake(0.0, -100.0, 320.0, 200.0) 
                                                   dataSource:facebookUsers];
 
-    [facebookUsersMenu setImage:[UIImage imageNamed:@"facebook-hightlighted.png"]];
-    [facebookUsersMenu setHighlightedImage:[UIImage imageNamed:@"facebook.png"]];
+    [facebookUsersMenu setContentImage:[UIImage imageNamed:@"facebook.png"]];
+    [facebookUsersMenu setHighlightedContentImage:[UIImage imageNamed:@"facebook.png"]];
 
-    [facebookUsersMenu setContentImage:nil];
-    [facebookUsersMenu setHighlightedContentImage:nil];
-    
     [[self view] addSubview:facebookUsersMenu];
     
     

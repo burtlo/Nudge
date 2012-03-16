@@ -11,18 +11,16 @@
 @interface WBRFacebookUserMenuItem () {
     NSMutableData *imageData;
 }
-
-
 @end
 
 @implementation WBRFacebookUserMenuItem
 
 
 - (id)initWithFacebookUser:(WBRFacebookUser *)user {
-    self = [super initWithImage:[UIImage imageNamed:@"unknown-user.png"] 
-                                   highlightedImage:[UIImage imageNamed:@"unknown-user.png"] 
-                                       ContentImage:nil 
-                            highlightedContentImage:nil];
+    self = [super initWithImage:nil 
+               highlightedImage:nil
+                   ContentImage:[UIImage imageNamed:@"unknown-user.png"] 
+        highlightedContentImage:[UIImage imageNamed:@"unknown-user.png"]];
                                  
     if (self) {
         
@@ -41,12 +39,11 @@
 
     [imageData appendData:data];
     
-    
 }
 
 - (void)connectionDidFinishLoading:(NSURLConnection *)connection {
-    [self setImage:[UIImage imageWithData:imageData]];
-    [self setHighlightedImage:[UIImage imageWithData:imageData]];
+    [[self contentImageView] setImage:[UIImage imageWithData:imageData]];
+    [[self contentImageView] setHighlightedImage:[UIImage imageWithData:imageData]];
     imageData = nil;
 }
 

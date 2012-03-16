@@ -70,11 +70,12 @@ static CGPoint RotateCGPointAroundCenter(CGPoint point, CGPoint center, float an
         [self setDataSource:dataSource];
         
         // add the "Add" Button.
-        _addButton = [[QuadCurveMenuItem alloc] initWithImage:[UIImage imageNamed:@"bg-addbutton.png"]
-                                       highlightedImage:[UIImage imageNamed:@"bg-addbutton-highlighted.png"] 
+        _addButton = [[QuadCurveMenuItem alloc] initWithImage:nil
+                                       highlightedImage:nil 
                                            ContentImage:[UIImage imageNamed:@"icon-plus.png"] 
                                 highlightedContentImage:[UIImage imageNamed:@"icon-plus-highlighted.png"]];
         _addButton.delegate = self;
+        
         _addButton.center = CGPointMake(kQuadCurveMenuDefaultStartPointX, kQuadCurveMenuDefaultStartPointY);
         [self addSubview:_addButton];
     }
@@ -122,7 +123,7 @@ static CGPoint RotateCGPointAroundCenter(CGPoint point, CGPoint center, float an
 }
 
 - (UIImage*)highlightedContentImage {
-	return _addButton.contentImageView.highlightedImage;
+    return _addButton.contentImageView.highlightedImage;
 }
 
 
@@ -137,7 +138,9 @@ static CGPoint RotateCGPointAroundCenter(CGPoint point, CGPoint center, float an
     }
     else
     {
-        return CGRectContainsPoint(_addButton.frame, point);
+        CGRect buttonFrame = CGRectOffset(_addButton.contentImageView.frame, _addButton.center.x, _addButton.center.y);
+        BOOL touchResult = CGRectContainsPoint(buttonFrame, point);
+        return touchResult;
     }
 }
 

@@ -6,11 +6,13 @@
 //  Copyright (c) 2011 lunaapp.com. All rights reserved.
 //
 
+#import "AGMedallionView.h"
+
 @protocol QuadCurveMenuItemEventDelegate;
 
 @interface QuadCurveMenuItem : UIImageView
 
-@property (nonatomic, retain, readonly) UIImageView *contentImageView;
+@property (nonatomic, retain, readonly) AGMedallionView *contentImageView;
 
 @property (nonatomic) CGPoint startPoint;
 @property (nonatomic) CGPoint endPoint;
