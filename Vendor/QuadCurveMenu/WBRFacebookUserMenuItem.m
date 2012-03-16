@@ -19,8 +19,8 @@
 
 
 - (id)initWithFacebookUser:(WBRFacebookUser *)user {
-    self = [super initWithImage:[UIImage imageNamed:@"facebook.png"] 
-                                   highlightedImage:[UIImage imageNamed:@"facebook-highlighed.png"] 
+    self = [super initWithImage:[UIImage imageNamed:@"unknown-user.png"] 
+                                   highlightedImage:[UIImage imageNamed:@"unknown-user.png"] 
                                        ContentImage:nil 
                             highlightedContentImage:nil];
                                  
@@ -46,6 +46,7 @@
 
 - (void)connectionDidFinishLoading:(NSURLConnection *)connection {
     [self setImage:[UIImage imageWithData:imageData]];
+    [self setHighlightedImage:[UIImage imageWithData:imageData]];
     imageData = nil;
 }
 

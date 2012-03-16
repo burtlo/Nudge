@@ -10,9 +10,6 @@
 
 @interface WBRFacebookUser ()
 
-@property (nonatomic,strong) NSString *identifier;
-@property (nonatomic,strong) NSString *name;
-
 @end
 
 @implementation WBRFacebookUser

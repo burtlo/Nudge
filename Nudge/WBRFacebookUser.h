@@ -14,4 +14,7 @@
 
 - (NSURL *)profileImageURL;
 
+@property (nonatomic,strong) NSString *identifier;
+@property (nonatomic,strong) NSString *name;
+
 @end

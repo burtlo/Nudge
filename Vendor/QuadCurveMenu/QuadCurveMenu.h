@@ -10,21 +10,12 @@
 #import "QuadCurveMenuItem.h"
 
 @protocol QuadCurveMenuDelegate;
+@protocol QuadCurveDataSourceDelegate;
 
 
 @interface QuadCurveMenu : UIView <QuadCurveMenuItemDelegate>
-{
-    NSArray *_menusArray;
-    int _flag;
-    NSTimer *_timer;
-    QuadCurveMenuItem *_addButton;
-    
-    id<QuadCurveMenuDelegate> _delegate;
 
-}
-@property (nonatomic, copy) NSArray *menusArray;
 @property (nonatomic, getter = isExpanding) BOOL expanding;
-@property (nonatomic, assign) id<QuadCurveMenuDelegate> delegate;
 
 @property (nonatomic, retain) UIImage *image;
 @property (nonatomic, retain) UIImage *highlightedImage;
@@ -39,9 +30,20 @@
 @property (nonatomic, assign) CGFloat rotateAngle;
 @property (nonatomic, assign) CGFloat menuWholeAngle;
 
-- (id)initWithFrame:(CGRect)frame menus:(NSArray *)aMenusArray;
+@property (nonatomic, assign) id<QuadCurveMenuDelegate> delegate;
+@property (nonatomic, assign) id<QuadCurveDataSourceDelegate> dataSource;
+
+- (id)initWithFrame:(CGRect)frame dataSource:(id<QuadCurveDataSourceDelegate>)dataSource;
+
 @end
 
 @protocol QuadCurveMenuDelegate <NSObject>
 - (void)quadCurveMenu:(QuadCurveMenu *)menu didSelectIndex:(NSInteger)idx;
+@end
+
+@protocol QuadCurveDataSourceDelegate <NSObject>
+
+- (int)numberOfMenuItems;
+- (id)menuItemAtIndex:(NSInteger)itemIndex;
+
 @end

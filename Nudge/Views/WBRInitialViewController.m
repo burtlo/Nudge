@@ -14,9 +14,83 @@
 #import "QuadCurveMenu.h"
 #import "QuadCurveMenuItem.h"
 
+@interface WBRFacebookUsers : NSObject <QuadCurveDataSourceDelegate> {
+    NSMutableDictionary *facebookUsers;
+}
+
+- (id)initWithDictionary:(NSDictionary *)dataDictionary;
+- (void)updateWithDictionary:(NSDictionary *)dataDictionary;
+
+@end
+
+@implementation WBRFacebookUsers
+
+
+- (id)init {
+    self = [super init];
+    if (self) {
+        facebookUsers = [NSMutableDictionary dictionary];
+    }
+    return self;
+}
+
+- (id)initWithDictionary:(NSDictionary *)dataDictionary {
+    self = [super init];
+    if (self) {
+        
+        facebookUsers = [NSMutableDictionary dictionary];
+        
+        [self updateWithDictionary:dataDictionary];
+        
+    }
+    return self;
+}
+
+#pragma mark - Update
+
+- (void)updateWithDictionary:(NSDictionary *)dataDictionary {
+
+    for (NSDictionary *userData in [dataDictionary objectForKey:@"data"]) {
+        
+        NSString *userIdentifier = [userData objectForKey:@"id"];
+        
+        if ([facebookUsers objectForKey:userIdentifier] == nil) {
+            WBRFacebookUser *user = [[WBRFacebookUser alloc] initWithDictionary:userData];
+            [facebookUsers setObject:user forKey:[user identifier]];
+        }
+        
+    }
+
+    
+}
+
+#pragma mark - QuadCurveDataSourceDelegate Adherence
+
+- (int)numberOfMenuItems {
+    int countOfItems = [[facebookUsers allValues] count];
+    
+    if (countOfItems > 10) {
+        countOfItems = 10;
+    }
+    
+    return countOfItems;
+}
+
+- (id)menuItemAtIndex:(NSInteger)itemIndex {
+    return [[WBRFacebookUserMenuItem alloc] initWithFacebookUser:[[facebookUsers allValues] objectAtIndex:itemIndex]];
+}
+
+@end
+
+
+
+
+
+
 @interface WBRInitialViewController ()
 
-@property (strong,nonatomic) QuadCurveMenu *facebookUsers;
+@property (strong,nonatomic) QuadCurveMenu *facebookUsersMenu;
+@property (strong,nonatomic) WBRFacebookUsers *facebookUsers;
 
 - (void)onFacebookLogin:(NSNotification *)notification;
 
@@ -25,6 +99,7 @@
 @implementation WBRInitialViewController
 
 @synthesize facebookUsers;
+@synthesize facebookUsersMenu;
 
 #pragma mark - Initialization
 
@@ -38,27 +113,19 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
- 
-    UIImage *storyMenuItemImage = [UIImage imageNamed:@"bg-menuitem.png"];
-    UIImage *storyMenuItemImagePressed = [UIImage imageNamed:@"bg-menuitem-highlighted.png"];
-    
-    UIImage *starImage = [UIImage imageNamed:@"icon-star.png"];
-    
-    QuadCurveMenuItem *starMenuItem1 = [[QuadCurveMenuItem alloc] initWithImage:storyMenuItemImage
-                                                               highlightedImage:storyMenuItemImagePressed 
-                                                                   ContentImage:starImage 
-                                                        highlightedContentImage:nil];
 
+    facebookUsers = [[WBRFacebookUsers alloc] init];
     
-    facebookUsers = [[QuadCurveMenu alloc] initWithFrame:CGRectMake(0.0, -100.0, 320.0, 200.0) menus:[NSArray arrayWithObject:starMenuItem1]];
+    facebookUsersMenu = [[QuadCurveMenu alloc] initWithFrame:CGRectMake(0.0, -100.0, 320.0, 200.0) 
+                                                  dataSource:facebookUsers];
 
-    [facebookUsers setImage:[UIImage imageNamed:@"facebook-hightlighted.png"]];
-    [facebookUsers setHighlightedImage:[UIImage imageNamed:@"facebook.png"]];
+    [facebookUsersMenu setImage:[UIImage imageNamed:@"facebook-hightlighted.png"]];
+    [facebookUsersMenu setHighlightedImage:[UIImage imageNamed:@"facebook.png"]];
 
-    [facebookUsers setContentImage:nil];
-    [facebookUsers setHighlightedContentImage:nil];
+    [facebookUsersMenu setContentImage:nil];
+    [facebookUsersMenu setHighlightedContentImage:nil];
     
-    [[self view] addSubview:facebookUsers];
+    [[self view] addSubview:facebookUsersMenu];
     
     
     [[NSNotificationCenter defaultCenter] addObserver:self 
@@ -91,6 +158,9 @@
 
 #pragma mark - FacebookRequestDelegate Adherence
 
+- (void)requestLoading:(FBRequest *)request {
+    
+}
 - (void)request:(FBRequest *)request didReceiveResponse:(NSURLResponse *)response {
     NSLog(@"response");    
 }
@@ -98,27 +168,7 @@
 - (void)request:(FBRequest *)request didLoad:(id)result {
     NSLog(@"results");
     
-    NSMutableArray *users = [NSMutableArray array];
-    
-    for (NSDictionary *userData in [result objectForKey:@"data"]) {
-        
-        WBRFacebookUser *user = [[WBRFacebookUser alloc] initWithDictionary:userData];
-        
-        [users addObject:user];
-    }
-    
-    NSMutableArray *menuItems = [NSMutableArray array];
-
-    for (int x = 0; x < 10; x++) {
-
-        WBRFacebookUserMenuItem *item = [[WBRFacebookUserMenuItem alloc] initWithFacebookUser:[users objectAtIndex:x]];
-        
-        [menuItems addObject:item];
-        
-    }
-    
-    [facebookUsers setMenusArray:menuItems];
-    
+    [facebookUsers updateWithDictionary:result];
     
 }
 
