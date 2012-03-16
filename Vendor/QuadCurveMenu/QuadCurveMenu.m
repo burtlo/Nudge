@@ -29,7 +29,7 @@ static CGPoint RotateCGPointAroundCenter(CGPoint point, CGPoint center, float an
 @interface QuadCurveMenu () {
     int _flag;
     NSTimer *_timer;
-    QuadCurveMenuItem *_addButton;
+    QuadCurveMenuItem *mainMenuButton;
     
     id<QuadCurveMenuDelegate> _delegate;
     id<QuadCurveDataSourceDelegate> dataSource_;
@@ -77,14 +77,14 @@ static CGPoint RotateCGPointAroundCenter(CGPoint point, CGPoint center, float an
         
         [self setDataSource:dataSource];
         
-        _addButton = [[QuadCurveMenuItem alloc] initWithImage:nil
+        mainMenuButton = [[QuadCurveMenuItem alloc] initWithImage:nil
                                        highlightedImage:nil 
                                            ContentImage:[UIImage imageNamed:@"icon-plus.png"] 
                                 highlightedContentImage:[UIImage imageNamed:@"icon-plus-highlighted.png"]];
-        _addButton.delegate = self;
+        mainMenuButton.delegate = self;
         
-        _addButton.center = CGPointMake(kQuadCurveMenuDefaultStartPointX, kQuadCurveMenuDefaultStartPointY);
-        [self addSubview:_addButton];
+        mainMenuButton.center = CGPointMake(kQuadCurveMenuDefaultStartPointX, kQuadCurveMenuDefaultStartPointY);
+        [self addSubview:mainMenuButton];
     }
     return self;
 }
@@ -93,7 +93,7 @@ static CGPoint RotateCGPointAroundCenter(CGPoint point, CGPoint center, float an
 
 - (void)dealloc
 {
-    [_addButton release];
+    [mainMenuButton release];
     [super dealloc];
 }
 
@@ -118,38 +118,21 @@ static CGPoint RotateCGPointAroundCenter(CGPoint point, CGPoint center, float an
 
 #pragma mark - images
 
-- (void)setImage:(UIImage *)image {
-	_addButton.image = image;
-}
-
-- (UIImage*)image {
-	return _addButton.image;
-}
-
-- (void)setHighlightedImage:(UIImage *)highlightedImage {
-	_addButton.highlightedImage = highlightedImage;
-}
-
-- (UIImage*)highlightedImage {
-	return _addButton.highlightedImage;
-}
-
-
 - (void)setContentImage:(UIImage *)contentImage {
-	_addButton.contentImageView.image = contentImage;
+	mainMenuButton.contentImageView.image = contentImage;
 }
 
 - (UIImage*)contentImage {
-	return _addButton.contentImageView.image;
+	return mainMenuButton.contentImageView.image;
 }
 
 
 - (void)setHighlightedContentImage:(UIImage *)highlightedContentImage {
-	_addButton.contentImageView.highlightedImage = highlightedContentImage;
+	mainMenuButton.contentImageView.highlightedImage = highlightedContentImage;
 }
 
 - (UIImage*)highlightedContentImage {
-    return _addButton.contentImageView.highlightedImage;
+    return mainMenuButton.contentImageView.highlightedImage;
 }
 
 
@@ -163,7 +146,7 @@ static CGPoint RotateCGPointAroundCenter(CGPoint point, CGPoint center, float an
         return YES;
     }
     else {
-        CGRect buttonFrame = CGRectOffset(_addButton.contentImageView.frame, _addButton.center.x, _addButton.center.y);
+        CGRect buttonFrame = CGRectOffset(mainMenuButton.contentImageView.frame, mainMenuButton.center.x, mainMenuButton.center.y);
         BOOL touchResult = CGRectContainsPoint(buttonFrame, point);
         return touchResult;
     }
@@ -177,10 +160,10 @@ static CGPoint RotateCGPointAroundCenter(CGPoint point, CGPoint center, float an
 
 - (void)quadCurveMenuItemTouchesBegan:(QuadCurveMenuItem *)item {
     
-    if (item == _addButton) {
+    if (item == mainMenuButton) {
         
         if (delegateHasDidBeginTouchingMenu) {
-            [[self delegate] quadCurveMenu:self didBeginTouchingMenu:_addButton];
+            [[self delegate] quadCurveMenu:self didBeginTouchingMenu:mainMenuButton];
         }
         
         BOOL willBeExpandingMenu = ![self isExpanding];
@@ -210,10 +193,10 @@ static CGPoint RotateCGPointAroundCenter(CGPoint point, CGPoint center, float an
 
 - (void)quadCurveMenuItemTouchesEnd:(QuadCurveMenuItem *)item {
     
-    if (item == _addButton) {
+    if (item == mainMenuButton) {
         
         if (delegateHasDidEndTouchingMenu) {
-            [[self delegate] quadCurveMenu:self didEndTouchingMenu:_addButton];
+            [[self delegate] quadCurveMenu:self didEndTouchingMenu:mainMenuButton];
         }
 
         return;
@@ -241,7 +224,7 @@ static CGPoint RotateCGPointAroundCenter(CGPoint point, CGPoint center, float an
     // rotate "add" button
     float angle = self.isExpanding ? -M_PI_4 : 0.0f;
     [UIView animateWithDuration:0.2f animations:^{
-        _addButton.transform = CGAffineTransformMakeRotation(angle);
+        mainMenuButton.transform = CGAffineTransformMakeRotation(angle);
     }];
     
     if (delegateHasDidEndTouching) {
@@ -288,7 +271,7 @@ static CGPoint RotateCGPointAroundCenter(CGPoint point, CGPoint center, float an
         item.farPoint = RotateCGPointAroundCenter(farPoint, startPoint, rotateAngle);  
         item.center = item.startPoint;
         item.delegate = self;
-		[self insertSubview:item belowSubview:_addButton];
+		[self insertSubview:item belowSubview:mainMenuButton];
     }
 }
 
@@ -307,7 +290,7 @@ static CGPoint RotateCGPointAroundCenter(CGPoint point, CGPoint center, float an
     // rotate add button
     float angle = self.isExpanding ? -M_PI_4 : 0.0f;
     [UIView animateWithDuration:0.2f animations:^{
-        _addButton.transform = CGAffineTransformMakeRotation(angle);
+        mainMenuButton.transform = CGAffineTransformMakeRotation(angle);
     }];
     
     // expand or close animation

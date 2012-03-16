@@ -17,8 +17,6 @@
 
 @property (nonatomic, getter = isExpanding) BOOL expanding;
 
-@property (nonatomic, retain) UIImage *image;
-@property (nonatomic, retain) UIImage *highlightedImage;
 @property (nonatomic, retain) UIImage *contentImage;
 @property (nonatomic, retain) UIImage *highlightedContentImage;
 
