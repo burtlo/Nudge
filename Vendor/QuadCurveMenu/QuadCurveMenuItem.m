@@ -8,6 +8,19 @@
 
 #import "QuadCurveMenuItem.h"
 static inline CGRect ScaleRect(CGRect rect, float n) {return CGRectMake((rect.size.width - rect.size.width * n)/ 2, (rect.size.height - rect.size.height * n) / 2, rect.size.width * n, rect.size.height * n);}
+
+@interface QuadCurveMenuItem () {
+    UIImageView *_contentImageView;
+    CGPoint _startPoint;
+    CGPoint _endPoint;
+    CGPoint _nearPoint; // near
+    CGPoint _farPoint; // far
+    
+    id<QuadCurveMenuItemEventDelegate> _delegate;
+}
+
+@end
+
 @implementation QuadCurveMenuItem
 
 @synthesize contentImageView = _contentImageView;

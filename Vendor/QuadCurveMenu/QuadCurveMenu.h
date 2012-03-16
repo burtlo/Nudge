@@ -13,7 +13,7 @@
 @protocol QuadCurveDataSourceDelegate;
 
 
-@interface QuadCurveMenu : UIView <QuadCurveMenuItemDelegate>
+@interface QuadCurveMenu : UIView <QuadCurveMenuItemEventDelegate>
 
 @property (nonatomic, getter = isExpanding) BOOL expanding;
 
