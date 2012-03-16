@@ -73,6 +73,8 @@
 		E202CE351513317800D8B9A2 /* Security.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E202CE341513317700D8B9A2 /* Security.framework */; };
 		E202CE371513318800D8B9A2 /* SystemConfiguration.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E202CE361513318700D8B9A2 /* SystemConfiguration.framework */; };
 		E202CE3B1513329300D8B9A2 /* DACircularProgressView.m in Sources */ = {isa = PBXBuildFile; fileRef = E202CE3A1513329300D8B9A2 /* DACircularProgressView.m */; };
+		E227D91A1514026A0074FC74 /* QuadCurveBlowupAnimation.m in Sources */ = {isa = PBXBuildFile; fileRef = E227D9191514026A0074FC74 /* QuadCurveBlowupAnimation.m */; };
+		E227D91D1514027C0074FC74 /* QuadCurveShrinkAnimation.m in Sources */ = {isa = PBXBuildFile; fileRef = E227D91C1514027C0074FC74 /* QuadCurveShrinkAnimation.m */; };
 		E286ACD71513C8BC000BDCA6 /* unknown-user.png in Resources */ = {isa = PBXBuildFile; fileRef = E286ACD51513C8BC000BDCA6 /* unknown-user.png */; };
 		E286ACD81513C8BC000BDCA6 /* unknown-user@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = E286ACD61513C8BC000BDCA6 /* unknown-user@2x.png */; };
 		E286ACDC1513C99B000BDCA6 /* WBRFacebookUsers.m in Sources */ = {isa = PBXBuildFile; fileRef = E286ACDB1513C99B000BDCA6 /* WBRFacebookUsers.m */; };
@@ -214,6 +216,11 @@
 		E202CE361513318700D8B9A2 /* SystemConfiguration.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SystemConfiguration.framework; path = System/Library/Frameworks/SystemConfiguration.framework; sourceTree = SDKROOT; };
 		E202CE391513329300D8B9A2 /* DACircularProgressView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DACircularProgressView.h; sourceTree = "<group>"; };
 		E202CE3A1513329300D8B9A2 /* DACircularProgressView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DACircularProgressView.m; sourceTree = "<group>"; };
+		E227D916151402090074FC74 /* QuadCurveAnimation.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = QuadCurveAnimation.h; sourceTree = "<group>"; };
+		E227D9181514026A0074FC74 /* QuadCurveBlowupAnimation.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = QuadCurveBlowupAnimation.h; sourceTree = "<group>"; };
+		E227D9191514026A0074FC74 /* QuadCurveBlowupAnimation.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = QuadCurveBlowupAnimation.m; sourceTree = "<group>"; };
+		E227D91B1514027C0074FC74 /* QuadCurveShrinkAnimation.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = QuadCurveShrinkAnimation.h; sourceTree = "<group>"; };
+		E227D91C1514027C0074FC74 /* QuadCurveShrinkAnimation.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = QuadCurveShrinkAnimation.m; sourceTree = "<group>"; };
 		E286ACD51513C8BC000BDCA6 /* unknown-user.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "unknown-user.png"; path = "Resources/unknown-user.png"; sourceTree = "<group>"; };
 		E286ACD61513C8BC000BDCA6 /* unknown-user@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "unknown-user@2x.png"; path = "Resources/unknown-user@2x.png"; sourceTree = "<group>"; };
 		E286ACDA1513C99B000BDCA6 /* WBRFacebookUsers.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = WBRFacebookUsers.h; sourceTree = "<group>"; };
@@ -379,6 +386,11 @@
 				E202CD7C15131A3000D8B9A2 /* QuadCurveMenuItem.m */,
 				E202CDAD151326BB00D8B9A2 /* WBRFacebookUserMenuItem.h */,
 				E202CDAE151326BC00D8B9A2 /* WBRFacebookUserMenuItem.m */,
+				E227D916151402090074FC74 /* QuadCurveAnimation.h */,
+				E227D9181514026A0074FC74 /* QuadCurveBlowupAnimation.h */,
+				E227D9191514026A0074FC74 /* QuadCurveBlowupAnimation.m */,
+				E227D91B1514027C0074FC74 /* QuadCurveShrinkAnimation.h */,
+				E227D91C1514027C0074FC74 /* QuadCurveShrinkAnimation.m */,
 			);
 			name = QuadCurveMenu;
 			path = Vendor/QuadCurveMenu;
@@ -664,6 +676,8 @@
 				E202CE2F151330FB00D8B9A2 /* Reachability.m in Sources */,
 				E202CE3B1513329300D8B9A2 /* DACircularProgressView.m in Sources */,
 				E286ACDC1513C99B000BDCA6 /* WBRFacebookUsers.m in Sources */,
+				E227D91A1514026A0074FC74 /* QuadCurveBlowupAnimation.m in Sources */,
+				E227D91D1514027C0074FC74 /* QuadCurveShrinkAnimation.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
