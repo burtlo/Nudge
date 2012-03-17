@@ -38,7 +38,6 @@ static CGPoint RotateCGPointAroundCenter(CGPoint point, CGPoint center, float an
 #pragma mark - Private Interface
 
 @interface QuadCurveMenu () {
-    int _flag;
     NSTimer *_timer;
     QuadCurveMenuItem *mainMenuButton;
     
@@ -58,8 +57,6 @@ static CGPoint RotateCGPointAroundCenter(CGPoint point, CGPoint center, float an
     
 }
 
-- (void)_expand;
-- (void)_close;
 - (void)_setMenu;
 
 @end
@@ -105,9 +102,9 @@ static CGPoint RotateCGPointAroundCenter(CGPoint point, CGPoint center, float an
         
         
         mainMenuButton = [[QuadCurveMenuItem alloc] initWithImage:nil
-                                       highlightedImage:nil 
-                                           ContentImage:[UIImage imageNamed:@"icon-plus.png"] 
-                                highlightedContentImage:[UIImage imageNamed:@"icon-plus-highlighted.png"]];
+                                                 highlightedImage:nil 
+                                                     ContentImage:[UIImage imageNamed:@"icon-plus.png"] 
+                                          highlightedContentImage:[UIImage imageNamed:@"icon-plus-highlighted.png"]];
         mainMenuButton.delegate = self;
         
         mainMenuButton.center = CGPointMake(kQuadCurveMenuDefaultStartPointX, kQuadCurveMenuDefaultStartPointY);
@@ -185,7 +182,7 @@ static CGPoint RotateCGPointAroundCenter(CGPoint point, CGPoint center, float an
 - (UIImage*)highlightedContentImage {
     return mainMenuButton.contentImageView.highlightedImage;
 }
-                               
+
 #pragma mark - UIView's methods
 
 - (BOOL)pointInside:(CGPoint)point withEvent:(UIEvent *)event {
@@ -249,7 +246,7 @@ static CGPoint RotateCGPointAroundCenter(CGPoint point, CGPoint center, float an
 }
 
 - (void)rotateMainMenuItemClockwise:(BOOL)animateClockwise {
- 
+    
     float angle = animateClockwise ? -M_PI_4 : 0.0f;
     [UIView animateWithDuration:0.2f animations:^{
         mainMenuButton.transform = CGAffineTransformMakeRotation(angle);
@@ -257,21 +254,30 @@ static CGPoint RotateCGPointAroundCenter(CGPoint point, CGPoint center, float an
     
 }
 
+- (NSArray *)allMenuItemsBeingDisplayed {
+    
+    NSPredicate *allMenuItemsPredicate = [NSPredicate predicateWithFormat:@"tag BETWEEN { %d, %d }",
+                                          kQuadCurveMenuItemStartingTag,
+                                          (kQuadCurveMenuItemStartingTag + [[self dataSource] numberOfMenuItems])];
+    
+    return [[self subviews] filteredArrayUsingPredicate:allMenuItemsPredicate];
+}
+
 - (void)menuItemTouchesEnd:(QuadCurveMenuItem *)item {
-
+    
     [self animateMenuItems:[NSArray arrayWithObject:item] withAnimation:[self selectedAnimation]];
-
+    
     NSPredicate *otherItems = [NSPredicate predicateWithFormat:@"tag BETWEEN { %d, %d } AND tag != %d",
                                kQuadCurveMenuItemStartingTag,
                                (kQuadCurveMenuItemStartingTag + [[self dataSource] numberOfMenuItems]),
                                [item tag]];
-
+    
     NSArray *otherMenuItems = [[self subviews] filteredArrayUsingPredicate:otherItems];
     
     [self animateMenuItems:otherMenuItems withAnimation:[self unselectedanimation]];
     
     _expanding = NO;
-
+    
     [self rotateMainMenuItemClockwise:[self isExpanding]];
     
     if (delegateHasDidEndTouching) {
@@ -323,21 +329,16 @@ static CGPoint RotateCGPointAroundCenter(CGPoint point, CGPoint center, float an
     return _expanding;
 }
 
+- (void)moveItemToPoint:(QuadCurveMenuItem *)item {
+    CAAnimationGroup *expandAnimation = [[self expandItemAnimation] animationForItem:item];
+    [item.layer addAnimation:expandAnimation forKey:[[self expandItemAnimation] animationName]];
+    item.center = item.endPoint;
+}
 
-- (void)performMainMenuAnimationWithSelectector:(SEL)animSelector andFlag:(int)flag {
-    
-    if (_timer) { return; }
-    _flag = flag;
-    
-    // Adding timer to runloop to make sure UI event won't block the timer from firing
-    _timer = [[NSTimer timerWithTimeInterval:timeOffset 
-                                      target:self 
-                                    selector:animSelector 
-                                    userInfo:nil 
-                                     repeats:YES] retain];
-    
-    [[NSRunLoop currentRunLoop] addTimer:_timer forMode:NSRunLoopCommonModes];
-    
+- (void)closeItemToPoint:(QuadCurveMenuItem *)item {
+    CAAnimationGroup *closeAnimation = [[self closeItemAnimation] animationForItem:item];
+    [item.layer addAnimation:closeAnimation forKey:[[self closeItemAnimation] animationName]];
+    item.center = item.startPoint;
 }
 
 - (void)performExpandMenu {
@@ -347,16 +348,30 @@ static CGPoint RotateCGPointAroundCenter(CGPoint point, CGPoint center, float an
     }
     
     [self _setMenu];
+ 
+    NSArray *itemToBeAnimated = [self allMenuItemsBeingDisplayed];
     
-    [self performMainMenuAnimationWithSelectector:@selector(_expand) andFlag:0];
+    for (int x = 0; x < [itemToBeAnimated count]; x++) {
+        QuadCurveMenuItem *item = [itemToBeAnimated objectAtIndex:x];
+        [self performSelector:@selector(moveItemToPoint:) withObject:item afterDelay:timeOffset * x];
+    }
+    
+    // TODO: fire expansion finish event
 }
 
 - (void)performCloseMenu {
     if (delegateHasWillClose) {
         [[self delegate] quadCurveMenuWillClose:self];
     }
-    [self performMainMenuAnimationWithSelectector:@selector(_close) 
-                                          andFlag:[self.dataSource numberOfMenuItems] - 1];
+    
+    NSArray *itemToBeAnimated = [self allMenuItemsBeingDisplayed];
+    
+    for (int x = 0; x < [itemToBeAnimated count]; x++) {
+        QuadCurveMenuItem *item = [itemToBeAnimated objectAtIndex:x];
+        [self performSelector:@selector(closeItemToPoint:) withObject:item afterDelay:timeOffset * x];
+    }
+
+    // TODO: fire close finish event
 }
 
 - (void)setExpanding:(BOOL)expanding {
@@ -372,49 +387,6 @@ static CGPoint RotateCGPointAroundCenter(CGPoint point, CGPoint center, float an
     }
     
     [self didChangeValueForKey:@"expanding"];
-}
-
-#pragma mark - private methods
-- (void)_expand {
-	
-    if (_flag == [[self dataSource] numberOfMenuItems])
-    {
-        [_timer invalidate];
-        [_timer release];
-        _timer = nil;
-        return;
-    }
-    
-    int tag = kQuadCurveMenuItemStartingTag + _flag;
-    QuadCurveMenuItem *item = (QuadCurveMenuItem *)[self viewWithTag:tag];
-    
-    CAAnimationGroup *animationgroup = [[self expandItemAnimation] animationForItem:item];
-    [item.layer addAnimation:animationgroup forKey:[[self expandItemAnimation] animationName]];
-    
-    item.center = item.endPoint;
-    
-    _flag ++;
-    
-}
-
-- (void)_close {
-    if (_flag == -1)
-    {
-        [_timer invalidate];
-        [_timer release];
-        _timer = nil;
-        return;
-    }
-    
-    int tag = kQuadCurveMenuItemStartingTag + _flag;
-     QuadCurveMenuItem *item = (QuadCurveMenuItem *)[self viewWithTag:tag];
-    
-    CAAnimationGroup *animationgroup = [[self closeItemAnimation] animationForItem:item];
-    [item.layer addAnimation:animationgroup forKey:[[self closeItemAnimation] animationName]];
-    
-    item.center = item.startPoint;
-    _flag --;
-    
 }
 
 @end
