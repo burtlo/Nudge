@@ -12,6 +12,6 @@
 @protocol QuadCurveAnimation <NSObject>
 
 - (NSString *)animationName;
-- (CAAnimationGroup *)animateItem:(QuadCurveMenuItem *)item;
+- (CAAnimationGroup *)animationForItem:(QuadCurveMenuItem *)item;
 
 @end

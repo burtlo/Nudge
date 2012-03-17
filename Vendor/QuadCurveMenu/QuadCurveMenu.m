@@ -12,7 +12,7 @@
 #import "QuadCurveBlowupAnimation.h"
 #import "QuadCurveShrinkAnimation.h"
 #import "QuadCurveItemExpandAnimation.h"
-#import "QuadCurveItemClosedAnimation.h"
+#import "QuadCurveItemCloseAnimation.h"
 
 #pragma mark - Constants
 
@@ -99,7 +99,7 @@ static CGPoint RotateCGPointAroundCenter(CGPoint point, CGPoint center, float an
         [self setUnselectedanimation:[[QuadCurveShrinkAnimation alloc] init]];        
         
         [self setExpandItemAnimation:[[QuadCurveItemExpandAnimation alloc] init]];
-        [self setCloseItemAnimation:[[QuadCurveItemClosedAnimation alloc] init]];
+        [self setCloseItemAnimation:[[QuadCurveItemCloseAnimation alloc] init]];
         
         [self setDataSource:dataSource];
         
@@ -242,7 +242,7 @@ static CGPoint RotateCGPointAroundCenter(CGPoint point, CGPoint center, float an
 
 - (void)animateMenuItems:(NSArray *)items withAnimation:(id<QuadCurveAnimation>)animation {
     for (QuadCurveMenuItem *item in items) {
-        CAAnimationGroup *itemAnimation = [animation animateItem:item];
+        CAAnimationGroup *itemAnimation = [animation animationForItem:item];
         [item.layer addAnimation:itemAnimation forKey:[animation animationName]];
         item.center = item.startPoint;
     }
@@ -388,7 +388,7 @@ static CGPoint RotateCGPointAroundCenter(CGPoint point, CGPoint center, float an
     int tag = kQuadCurveMenuItemStartingTag + _flag;
     QuadCurveMenuItem *item = (QuadCurveMenuItem *)[self viewWithTag:tag];
     
-    CAAnimationGroup *animationgroup = [[self expandItemAnimation] animateItem:item];
+    CAAnimationGroup *animationgroup = [[self expandItemAnimation] animationForItem:item];
     [item.layer addAnimation:animationgroup forKey:[[self expandItemAnimation] animationName]];
     
     item.center = item.endPoint;
@@ -409,7 +409,7 @@ static CGPoint RotateCGPointAroundCenter(CGPoint point, CGPoint center, float an
     int tag = kQuadCurveMenuItemStartingTag + _flag;
      QuadCurveMenuItem *item = (QuadCurveMenuItem *)[self viewWithTag:tag];
     
-    CAAnimationGroup *animationgroup = [[self closeItemAnimation] animateItem:item];
+    CAAnimationGroup *animationgroup = [[self closeItemAnimation] animationForItem:item];
     [item.layer addAnimation:animationgroup forKey:[[self closeItemAnimation] animationName]];
     
     item.center = item.startPoint;

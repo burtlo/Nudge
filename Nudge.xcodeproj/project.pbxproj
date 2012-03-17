@@ -76,7 +76,7 @@
 		E227D91A1514026A0074FC74 /* QuadCurveBlowupAnimation.m in Sources */ = {isa = PBXBuildFile; fileRef = E227D9191514026A0074FC74 /* QuadCurveBlowupAnimation.m */; };
 		E227D91D1514027C0074FC74 /* QuadCurveShrinkAnimation.m in Sources */ = {isa = PBXBuildFile; fileRef = E227D91C1514027C0074FC74 /* QuadCurveShrinkAnimation.m */; };
 		E227D927151417890074FC74 /* QuadCurveItemExpandAnimation.m in Sources */ = {isa = PBXBuildFile; fileRef = E227D926151417890074FC74 /* QuadCurveItemExpandAnimation.m */; };
-		E227D92A151417A60074FC74 /* QuadCurveItemClosedAnimation.m in Sources */ = {isa = PBXBuildFile; fileRef = E227D929151417A60074FC74 /* QuadCurveItemClosedAnimation.m */; };
+		E227D92A151417A60074FC74 /* QuadCurveItemCloseAnimation.m in Sources */ = {isa = PBXBuildFile; fileRef = E227D929151417A60074FC74 /* QuadCurveItemCloseAnimation.m */; };
 		E286ACD71513C8BC000BDCA6 /* unknown-user.png in Resources */ = {isa = PBXBuildFile; fileRef = E286ACD51513C8BC000BDCA6 /* unknown-user.png */; };
 		E286ACD81513C8BC000BDCA6 /* unknown-user@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = E286ACD61513C8BC000BDCA6 /* unknown-user@2x.png */; };
 		E286ACDC1513C99B000BDCA6 /* WBRFacebookUsers.m in Sources */ = {isa = PBXBuildFile; fileRef = E286ACDB1513C99B000BDCA6 /* WBRFacebookUsers.m */; };
@@ -225,8 +225,8 @@
 		E227D91C1514027C0074FC74 /* QuadCurveShrinkAnimation.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = QuadCurveShrinkAnimation.m; sourceTree = "<group>"; };
 		E227D925151417890074FC74 /* QuadCurveItemExpandAnimation.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = QuadCurveItemExpandAnimation.h; sourceTree = "<group>"; };
 		E227D926151417890074FC74 /* QuadCurveItemExpandAnimation.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = QuadCurveItemExpandAnimation.m; sourceTree = "<group>"; };
-		E227D928151417A60074FC74 /* QuadCurveItemClosedAnimation.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = QuadCurveItemClosedAnimation.h; sourceTree = "<group>"; };
-		E227D929151417A60074FC74 /* QuadCurveItemClosedAnimation.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = QuadCurveItemClosedAnimation.m; sourceTree = "<group>"; };
+		E227D928151417A60074FC74 /* QuadCurveItemCloseAnimation.h */ = {isa = PBXFileReference; fileEncoding = 4; path = QuadCurveItemCloseAnimation.h; sourceTree = "<group>"; };
+		E227D929151417A60074FC74 /* QuadCurveItemCloseAnimation.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = QuadCurveItemCloseAnimation.m; sourceTree = "<group>"; };
 		E286ACD51513C8BC000BDCA6 /* unknown-user.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "unknown-user.png"; path = "Resources/unknown-user.png"; sourceTree = "<group>"; };
 		E286ACD61513C8BC000BDCA6 /* unknown-user@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "unknown-user@2x.png"; path = "Resources/unknown-user@2x.png"; sourceTree = "<group>"; };
 		E286ACDA1513C99B000BDCA6 /* WBRFacebookUsers.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = WBRFacebookUsers.h; sourceTree = "<group>"; };
@@ -399,8 +399,8 @@
 				E227D91C1514027C0074FC74 /* QuadCurveShrinkAnimation.m */,
 				E227D925151417890074FC74 /* QuadCurveItemExpandAnimation.h */,
 				E227D926151417890074FC74 /* QuadCurveItemExpandAnimation.m */,
-				E227D928151417A60074FC74 /* QuadCurveItemClosedAnimation.h */,
-				E227D929151417A60074FC74 /* QuadCurveItemClosedAnimation.m */,
+				E227D928151417A60074FC74 /* QuadCurveItemCloseAnimation.h */,
+				E227D929151417A60074FC74 /* QuadCurveItemCloseAnimation.m */,
 			);
 			name = QuadCurveMenu;
 			path = Vendor/QuadCurveMenu;
@@ -689,7 +689,7 @@
 				E227D91A1514026A0074FC74 /* QuadCurveBlowupAnimation.m in Sources */,
 				E227D91D1514027C0074FC74 /* QuadCurveShrinkAnimation.m in Sources */,
 				E227D927151417890074FC74 /* QuadCurveItemExpandAnimation.m in Sources */,
-				E227D92A151417A60074FC74 /* QuadCurveItemClosedAnimation.m in Sources */,
+				E227D92A151417A60074FC74 /* QuadCurveItemCloseAnimation.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

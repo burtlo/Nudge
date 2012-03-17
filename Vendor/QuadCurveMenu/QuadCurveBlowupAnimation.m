@@ -14,7 +14,7 @@
     return @"blowup";
 }
 
-- (CAAnimationGroup *)animateItem:(QuadCurveMenuItem *)item {
+- (CAAnimationGroup *)animationForItem:(QuadCurveMenuItem *)item {
     
     CGPoint point = item.center;
     

@@ -14,7 +14,7 @@
     return @"Expand";
 }
 
-- (CAAnimationGroup *)animateItem:(QuadCurveMenuItem *)item {
+- (CAAnimationGroup *)animationForItem:(QuadCurveMenuItem *)item {
     
     CAKeyframeAnimation *rotateAnimation = [CAKeyframeAnimation animationWithKeyPath:@"transform.rotation.z"];
     rotateAnimation.values = [NSArray arrayWithObjects:[NSNumber numberWithFloat:M_PI],[NSNumber numberWithFloat:0.0f], nil];

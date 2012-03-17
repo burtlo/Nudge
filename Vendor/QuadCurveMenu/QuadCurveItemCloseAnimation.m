@@ -1,20 +1,20 @@
 //
-//  QuadCurveItemClosedAnimation.m
+//  QuadCurveItemCloseAnimation.m
 //  Nudge
 //
 //  Created by Franklin Webber on 3/16/12.
 //  Copyright (c) 2012 Franklin Webber. All rights reserved.
 //
 
-#import "QuadCurveItemClosedAnimation.h"
+#import "QuadCurveItemCloseAnimation.h"
 
-@implementation QuadCurveItemClosedAnimation
+@implementation QuadCurveItemCloseAnimation
 
 - (NSString *)animationName {
     return @"Close";
 }
 
-- (CAAnimationGroup *)animateItem:(QuadCurveMenuItem *)item {
+- (CAAnimationGroup *)animationForItem:(QuadCurveMenuItem *)item {
     
     CAKeyframeAnimation *rotateAnimation = [CAKeyframeAnimation animationWithKeyPath:@"transform.rotation.z"];
     rotateAnimation.values = [NSArray arrayWithObjects:[NSNumber numberWithFloat:0.0f],[NSNumber numberWithFloat:M_PI * 2],[NSNumber numberWithFloat:0.0f], nil];
