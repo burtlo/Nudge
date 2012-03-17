@@ -52,6 +52,12 @@
 - (BOOL)quadCurveMenuShouldExpand:(QuadCurveMenu *)menu;
 - (BOOL)quadCurveMenuShouldClose:(QuadCurveMenu *)menu;
 
+- (void)quadCurveMenuWillExpand:(QuadCurveMenu *)menu;
+- (void)quadCurveMenuDidExpand:(QuadCurveMenu *)menu;
+
+- (void)quadCurveMenuWillClose:(QuadCurveMenu *)menu;
+- (void)quadCurveMenuDidClose:(QuadCurveMenu *)menu;
+
 - (void)quadCurveMenu:(QuadCurveMenu *)menu didBeginTouching:(QuadCurveMenuItem *)menuItem;
 - (void)quadCurveMenu:(QuadCurveMenu *)menu didEndTouching:(QuadCurveMenuItem *)menuItem;
 

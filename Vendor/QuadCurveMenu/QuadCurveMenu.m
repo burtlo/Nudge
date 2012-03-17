@@ -47,6 +47,10 @@ static CGPoint RotateCGPointAroundCenter(CGPoint point, CGPoint center, float an
     BOOL delegateHasDidEndTouchingMenu;
     BOOL delegateHasShouldExpand;
     BOOL delegateHasShouldClose;
+    BOOL delegateHasWillExpand;
+    BOOL delegateHasDidExpand;
+    BOOL delegateHasWillClose;
+    BOOL delegateHasDidClose;
     BOOL delegateHasDidBeginTouching;
     BOOL delegateHasDidEndTouching;
     
@@ -126,6 +130,10 @@ static CGPoint RotateCGPointAroundCenter(CGPoint point, CGPoint center, float an
     delegateHasDidEndTouchingMenu = [delegate respondsToSelector:@selector(quadCurveMenu:didEndTouchingMenu:)];
     delegateHasShouldExpand = [delegate respondsToSelector:@selector(quadCurveMenuShouldExpand:)];
     delegateHasShouldClose = [delegate respondsToSelector:@selector(quadCurveMenuShouldClose:)];
+    delegateHasWillExpand = [delegate respondsToSelector:@selector(quadCurveMenuWillExpand:)];
+    delegateHasDidExpand = [delegate respondsToSelector:@selector(quadCurveMenuDidExpand:)];
+    delegateHasWillClose = [delegate respondsToSelector:@selector(quadCurveMenuWillClose:)];
+    delegateHasDidClose = [delegate respondsToSelector:@selector(quadCurveMenuDidClose:)];
     delegateHasDidBeginTouching = [delegate respondsToSelector:@selector(quadCurveMenu:didBeginTouching:)];
     delegateHasDidEndTouching = [delegate respondsToSelector:@selector(quadCurveMenu:didEndTouching:)];
     
@@ -306,30 +314,55 @@ static CGPoint RotateCGPointAroundCenter(CGPoint point, CGPoint center, float an
     return _expanding;
 }
 
-- (void)setExpanding:(BOOL)expanding {
-	
-	if (expanding) {
-		[self _setMenu];
-	}
-	
-    _expanding = expanding;    
-    
-    // rotate add button
-    float angle = self.isExpanding ? -M_PI_4 : 0.0f;
-    [UIView animateWithDuration:0.2f animations:^{
-        mainMenuButton.transform = CGAffineTransformMakeRotation(angle);
-    }];
-    
-    // expand or close animation
-    if (!_timer) 
-    {
-        _flag = self.isExpanding ? 0 : ([[self dataSource] numberOfMenuItems] - 1);
-        SEL selector = self.isExpanding ? @selector(_expand) : @selector(_close);
 
-        // Adding timer to runloop to make sure UI event won't block the timer from firing
-        _timer = [[NSTimer timerWithTimeInterval:timeOffset target:self selector:selector userInfo:nil repeats:YES] retain];
-        [[NSRunLoop currentRunLoop] addTimer:_timer forMode:NSRunLoopCommonModes];
+- (void)performMainMenuAnimationWithSelectector:(SEL)animSelector andFlag:(int)flag {
+    
+    if (_timer) { return; }
+    _flag = flag;
+    
+    // Adding timer to runloop to make sure UI event won't block the timer from firing
+    _timer = [[NSTimer timerWithTimeInterval:timeOffset 
+                                      target:self 
+                                    selector:animSelector 
+                                    userInfo:nil 
+                                     repeats:YES] retain];
+    
+    [[NSRunLoop currentRunLoop] addTimer:_timer forMode:NSRunLoopCommonModes];
+    
+}
+
+- (void)performExpandMenu {
+    
+    if (delegateHasWillExpand) {
+        [[self delegate] quadCurveMenuWillExpand:self];
     }
+    
+    [self _setMenu];
+    
+    [self performMainMenuAnimationWithSelectector:@selector(_expand) andFlag:0];
+}
+
+- (void)performCloseMenu {
+    if (delegateHasWillClose) {
+        [[self delegate] quadCurveMenuWillClose:self];
+    }
+    [self performMainMenuAnimationWithSelectector:@selector(_close) 
+                                          andFlag:[self.dataSource numberOfMenuItems] - 1];
+}
+
+- (void)setExpanding:(BOOL)expanding {
+    [self willChangeValueForKey:@"expanding"];
+    _expanding = expanding;
+    
+    [self rotateMainMenuItemClockwise:[self isExpanding]];
+    
+	if ([self isExpanding]) {
+        [self performExpandMenu];
+	} else {
+        [self performCloseMenu];
+    }
+    
+    [self didChangeValueForKey:@"expanding"];
 }
 
 #pragma mark - private methods
