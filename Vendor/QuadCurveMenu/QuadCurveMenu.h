@@ -8,6 +8,7 @@
 
 #import <UIKit/UIKit.h>
 #import "QuadCurveMenuItem.h"
+#import "QuadCurveAnimation.h"
 
 @protocol QuadCurveMenuDelegate;
 @protocol QuadCurveDataSourceDelegate;
@@ -27,6 +28,9 @@
 @property (nonatomic, assign) CGFloat timeOffset;
 @property (nonatomic, assign) CGFloat rotateAngle;
 @property (nonatomic, assign) CGFloat menuWholeAngle;
+
+@property (nonatomic, retain) id<QuadCurveAnimation> selectedAnimation;
+@property (nonatomic, retain) id<QuadCurveAnimation> unselectedanimation;
 
 @property (nonatomic, assign) id<QuadCurveMenuDelegate> delegate;
 @property (nonatomic, assign) id<QuadCurveDataSourceDelegate> dataSource;

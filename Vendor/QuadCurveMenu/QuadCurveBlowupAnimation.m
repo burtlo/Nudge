@@ -10,7 +10,11 @@
 
 @implementation QuadCurveBlowupAnimation
 
-+ (CAAnimationGroup *)animationAtPoint:(CGPoint)point {
+- (NSString *)animationName {
+    return @"blowup";
+}
+
+- (CAAnimationGroup *)animationAtPoint:(CGPoint)point {
 
     CAKeyframeAnimation *positionAnimation = [CAKeyframeAnimation animationWithKeyPath:@"position"];
     positionAnimation.values = [NSArray arrayWithObjects:[NSValue valueWithCGPoint:point], nil];

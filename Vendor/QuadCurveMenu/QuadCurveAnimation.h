@@ -10,6 +10,7 @@
 
 @protocol QuadCurveAnimation <NSObject>
 
-+ (CAAnimationGroup *)animationAtPoint:(CGPoint)point;
+- (NSString *)animationName;
+- (CAAnimationGroup *)animationAtPoint:(CGPoint)point;
 
 @end

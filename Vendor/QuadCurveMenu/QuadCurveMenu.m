@@ -12,6 +12,8 @@
 #import "QuadCurveBlowupAnimation.h"
 #import "QuadCurveShrinkAnimation.h"
 
+#pragma mark - Constants
+
 static CGFloat const kQuadCurveMenuDefaultNearRadius = 110.0f;
 static CGFloat const kQuadCurveMenuDefaultEndRadius = 120.0f;
 static CGFloat const kQuadCurveMenuDefaultFarRadius = 140.0f;
@@ -30,6 +32,8 @@ static CGPoint RotateCGPointAroundCenter(CGPoint point, CGPoint center, float an
     CGAffineTransform transformGroup = CGAffineTransformConcat(CGAffineTransformConcat(CGAffineTransformInvert(translation), rotation), translation);
     return CGPointApplyAffineTransform(point, transformGroup);    
 }
+
+#pragma mark - Private Interface
 
 @interface QuadCurveMenu () {
     int _flag;
@@ -54,9 +58,14 @@ static CGPoint RotateCGPointAroundCenter(CGPoint point, CGPoint center, float an
 
 @end
 
+#pragma mark - Implementation
+
 @implementation QuadCurveMenu
 
 @synthesize nearRadius, endRadius, farRadius, timeOffset, rotateAngle, menuWholeAngle, startPoint;
+
+@synthesize selectedAnimation;
+@synthesize unselectedanimation;
 
 @synthesize expanding = _expanding;
 @synthesize delegate = _delegate;
@@ -78,7 +87,11 @@ static CGPoint RotateCGPointAroundCenter(CGPoint point, CGPoint center, float an
 		[self setMenuWholeAngle:kQuadCurveMenuDefaultMenuWholeAngle];
         [self setStartPoint:CGPointMake(kQuadCurveMenuDefaultStartPointX, kQuadCurveMenuDefaultStartPointY)];
         
+        [self setSelectedAnimation:[[QuadCurveBlowupAnimation alloc] init]];
+        [self setUnselectedanimation:[[QuadCurveShrinkAnimation alloc] init]];        
+        
         [self setDataSource:dataSource];
+        
         
         mainMenuButton = [[QuadCurveMenuItem alloc] initWithImage:nil
                                        highlightedImage:nil 
@@ -87,15 +100,18 @@ static CGPoint RotateCGPointAroundCenter(CGPoint point, CGPoint center, float an
         mainMenuButton.delegate = self;
         
         mainMenuButton.center = CGPointMake(kQuadCurveMenuDefaultStartPointX, kQuadCurveMenuDefaultStartPointY);
+        
         [self addSubview:mainMenuButton];
+        
     }
     return self;
 }
 
 #pragma mark - Deallocation
 
-- (void)dealloc
-{
+- (void)dealloc {
+    [selectedAnimation release];
+    [unselectedanimation release];
     [mainMenuButton release];
     [super dealloc];
 }
@@ -207,18 +223,10 @@ static CGPoint RotateCGPointAroundCenter(CGPoint point, CGPoint center, float an
     }
 }
 
-- (void)animateSelectedItems:(NSArray *)items {
+- (void)animateMenuItems:(NSArray *)items withAnimation:(id<QuadCurveAnimation>)animation {
     for (QuadCurveMenuItem *item in items) {
-        CAAnimationGroup *blowup = [QuadCurveBlowupAnimation animationAtPoint:item.center];
-        [item.layer addAnimation:blowup forKey:@"blowup"];
-        item.center = item.startPoint;
-    }
-}
-
-- (void)animateUnselectedItems:(NSArray *)items {
-    for (QuadCurveMenuItem *item in items) {
-        CAAnimationGroup *shrink = [QuadCurveShrinkAnimation animationAtPoint:item.center];
-        [item.layer addAnimation:shrink forKey:@"shrink"];
+        CAAnimationGroup *itemAnimation = [animation animationAtPoint:[item center]];
+        [item.layer addAnimation:itemAnimation forKey:[animation animationName]];
         item.center = item.startPoint;
     }
 }
@@ -234,7 +242,7 @@ static CGPoint RotateCGPointAroundCenter(CGPoint point, CGPoint center, float an
 
 - (void)menuItemTouchesEnd:(QuadCurveMenuItem *)item {
 
-    [self animateSelectedItems:[NSArray arrayWithObject:item]];
+    [self animateMenuItems:[NSArray arrayWithObject:item] withAnimation:[self selectedAnimation]];
 
     NSPredicate *otherItems = [NSPredicate predicateWithFormat:@"tag BETWEEN { %d, %d } AND tag != %d",
                                kQuadCurveMenuItemStartingTag,
@@ -243,7 +251,7 @@ static CGPoint RotateCGPointAroundCenter(CGPoint point, CGPoint center, float an
 
     NSArray *otherMenuItems = [[self subviews] filteredArrayUsingPredicate:otherItems];
     
-    [self animateUnselectedItems:otherMenuItems];
+    [self animateMenuItems:otherMenuItems withAnimation:[self unselectedanimation]];
     
     _expanding = NO;
 

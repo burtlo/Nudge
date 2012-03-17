@@ -10,7 +10,11 @@
 
 @implementation QuadCurveShrinkAnimation
 
-+ (CAAnimationGroup *)animationAtPoint:(CGPoint)point {
+- (NSString *)animationName {
+    return @"shrink";
+}
+
+- (CAAnimationGroup *)animationAtPoint:(CGPoint)point {
     
     CAKeyframeAnimation *positionAnimation = [CAKeyframeAnimation animationWithKeyPath:@"position"];
     positionAnimation.values = [NSArray arrayWithObjects:[NSValue valueWithCGPoint:point], nil];
