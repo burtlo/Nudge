@@ -88,22 +88,21 @@ static CGPoint RotateCGPointAroundCenter(CGPoint point, CGPoint center, float an
     if (self) {
         self.backgroundColor = [UIColor clearColor];
 		
-		[self setNearRadius:kQuadCurveMenuDefaultNearRadius];
-		[self setEndRadius:kQuadCurveMenuDefaultEndRadius];
-		[self setFarRadius:kQuadCurveMenuDefaultFarRadius];
-		[self setTimeOffset:kQuadCurveMenuDefaultTimeOffset];
-		[self setRotateAngle:kQuadCurveMenuDefaultRotateAngle];
-		[self setMenuWholeAngle:kQuadCurveMenuDefaultMenuWholeAngle];
-        [self setStartPoint:CGPointMake(kQuadCurveMenuDefaultStartPointX, kQuadCurveMenuDefaultStartPointY)];
+        self.nearRadius = kQuadCurveMenuDefaultNearRadius;
+        self.endRadius = kQuadCurveMenuDefaultEndRadius;
+        self.farRadius = kQuadCurveMenuDefaultFarRadius;
+        self.timeOffset = kQuadCurveMenuDefaultTimeOffset;
+        self.rotateAngle = kQuadCurveMenuDefaultRotateAngle;
+		self.menuWholeAngle = kQuadCurveMenuDefaultMenuWholeAngle;
+        self.startPoint = CGPointMake(kQuadCurveMenuDefaultStartPointX, kQuadCurveMenuDefaultStartPointY);
         
-        [self setSelectedAnimation:[[[QuadCurveBlowupAnimation alloc] init] autorelease]];
-        [self setUnselectedanimation:[[[QuadCurveShrinkAnimation alloc] init] autorelease]];        
+        self.selectedAnimation = [[[QuadCurveBlowupAnimation alloc] init] autorelease];
+        self.unselectedanimation = [[[QuadCurveShrinkAnimation alloc] init] autorelease];
         
-        [self setExpandItemAnimation:[[[QuadCurveItemExpandAnimation alloc] init] autorelease]];
-        [self setCloseItemAnimation:[[[QuadCurveItemCloseAnimation alloc] init] autorelease]];
+        self.expandItemAnimation = [[[QuadCurveItemExpandAnimation alloc] init] autorelease];
+        self.closeItemAnimation = [[[QuadCurveItemCloseAnimation alloc] init] autorelease];
         
-        [self setDataSource:dataSource];
-        
+        self.dataSource = dataSource;
         
         mainMenuButton = [[QuadCurveMenuItem alloc] initWithImage:[UIImage imageNamed:@"icon-plus.png"] 
                                                  highlightedImage:[UIImage imageNamed:@"icon-plus-highlighted.png"]];
