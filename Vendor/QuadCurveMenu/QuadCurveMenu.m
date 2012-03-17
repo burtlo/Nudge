@@ -105,10 +105,8 @@ static CGPoint RotateCGPointAroundCenter(CGPoint point, CGPoint center, float an
         [self setDataSource:dataSource];
         
         
-        mainMenuButton = [[QuadCurveMenuItem alloc] initWithImage:nil
-                                                 highlightedImage:nil 
-                                                     ContentImage:[UIImage imageNamed:@"icon-plus.png"] 
-                                          highlightedContentImage:[UIImage imageNamed:@"icon-plus-highlighted.png"]];
+        mainMenuButton = [[QuadCurveMenuItem alloc] initWithImage:[UIImage imageNamed:@"icon-plus.png"] 
+                                                 highlightedImage:[UIImage imageNamed:@"icon-plus-highlighted.png"]];
         mainMenuButton.delegate = self;
         
         mainMenuButton.center = CGPointMake(kQuadCurveMenuDefaultStartPointX, kQuadCurveMenuDefaultStartPointY);
@@ -133,9 +131,11 @@ static CGPoint RotateCGPointAroundCenter(CGPoint point, CGPoint center, float an
 #pragma mark - Event Delegate
 
 - (void)setDelegate:(id<QuadCurveMenuDelegate>)delegate {
-    
-    if (delegate == nil) { return; }
-    
+
+    [self willChangeValueForKey:@"delegate"];
+
+    _delegate = delegate;
+
     delegateHasDidBeginTouchingMenu = [delegate respondsToSelector:@selector(quadCurveMenu:didBeginTouchingMenu:)];
     delegateHasDidEndTouchingMenu = [delegate respondsToSelector:@selector(quadCurveMenu:didEndTouchingMenu:)];
     delegateHasShouldExpand = [delegate respondsToSelector:@selector(quadCurveMenuShouldExpand:)];
@@ -147,8 +147,6 @@ static CGPoint RotateCGPointAroundCenter(CGPoint point, CGPoint center, float an
     delegateHasDidBeginTouching = [delegate respondsToSelector:@selector(quadCurveMenu:didBeginTouching:)];
     delegateHasDidEndTouching = [delegate respondsToSelector:@selector(quadCurveMenu:didEndTouching:)];
     
-    [self willChangeValueForKey:@"delegate"];
-    _delegate = delegate;
     [self didChangeValueForKey:@"delegate"];
 }
 
@@ -164,7 +162,6 @@ static CGPoint RotateCGPointAroundCenter(CGPoint point, CGPoint center, float an
     if ([self isExpanding]) {
         [self setExpanding:NO];
     }
-    
 }
 
 

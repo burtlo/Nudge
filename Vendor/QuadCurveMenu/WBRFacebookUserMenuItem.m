@@ -17,10 +17,8 @@
 
 
 - (id)initWithFacebookUser:(WBRFacebookUser *)user {
-    self = [super initWithImage:nil 
-               highlightedImage:nil
-                   ContentImage:[UIImage imageNamed:@"unknown-user.png"] 
-        highlightedContentImage:[UIImage imageNamed:@"unknown-user.png"]];
+    self = [super initWithImage:[UIImage imageNamed:@"unknown-user.png"] 
+        highlightedImage:[UIImage imageNamed:@"unknown-user.png"]];
                                  
     if (self) {
         

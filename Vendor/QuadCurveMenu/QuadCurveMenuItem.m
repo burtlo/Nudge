@@ -11,13 +11,18 @@
 static inline CGRect ScaleRect(CGRect rect, float n) {return CGRectMake((rect.size.width - rect.size.width * n)/ 2, (rect.size.height - rect.size.height * n) / 2, rect.size.width * n, rect.size.height * n);}
 
 @interface QuadCurveMenuItem () {
+    
     AGMedallionView *_contentImageView;
+    
     CGPoint _startPoint;
     CGPoint _endPoint;
     CGPoint _nearPoint; // near
     CGPoint _farPoint; // far
     
-    id<QuadCurveMenuItemEventDelegate> _delegate;
+    id<QuadCurveMenuItemEventDelegate> delegate_;
+    
+    BOOL delegateHasTouchesBegan;
+    BOOL delegateHasTouchesEnded;
 }
 
 @end
@@ -30,34 +35,46 @@ static inline CGRect ScaleRect(CGRect rect, float n) {return CGRectMake((rect.si
 @synthesize endPoint = _endPoint;
 @synthesize nearPoint = _nearPoint;
 @synthesize farPoint = _farPoint;
-@synthesize delegate  = _delegate;
+@synthesize delegate  = delegate_;
 
-#pragma mark - initialization & cleaning up
-- (id)initWithImage:(UIImage *)img 
-   highlightedImage:(UIImage *)himg
-       ContentImage:(UIImage *)cimg
-highlightedContentImage:(UIImage *)hcimg;
-{
-    if (self = [super init]) 
-    {
-        self.image = img;
-        self.highlightedImage = himg;
-        self.userInteractionEnabled = YES;
+#pragma mark - Initialization
+
+- (id)initWithImage:(UIImage *)image highlightedImage:(UIImage *)highlightedImage {
+    
+    self = [super init];
+    if (self) {
         
+        self.userInteractionEnabled = YES;
         _contentImageView = [[AGMedallionView alloc] init];
-        [_contentImageView setImage:cimg];
-        [_contentImageView setHighlightedImage:hcimg];
+        [_contentImageView setImage:image];
+        [_contentImageView setHighlightedImage:highlightedImage];
         
         [self addSubview:_contentImageView];
+        
     }
     return self;
 }
 
-- (void)dealloc
-{
+- (void)dealloc {
     [_contentImageView release];
     [super dealloc];
 }
+
+#pragma mark - Delegate
+
+- (void)setDelegate:(id<QuadCurveMenuItemEventDelegate>)delegate {
+
+    [self willChangeValueForKey:@"delegate"];
+    
+    delegate_ = delegate;
+    
+    delegateHasTouchesBegan = [delegate respondsToSelector:@selector(quadCurveMenuItemTouchesBegan:)];
+    delegateHasTouchesEnded = [delegate respondsToSelector:@selector(quadCurveMenuItemTouchesEnd:)];
+    
+    [self didChangeValueForKey:@"delegate"];
+    
+}
+
 #pragma mark - UIView's methods
 
 - (void)layoutSubviews {
@@ -80,9 +97,9 @@ highlightedContentImage:(UIImage *)hcimg;
 - (void)touchesBegan:(NSSet *)touches withEvent:(UIEvent *)event {
     
     self.highlighted = YES;
-    if ([_delegate respondsToSelector:@selector(quadCurveMenuItemTouchesBegan:)])
-    {
-       [_delegate quadCurveMenuItemTouchesBegan:self];
+    
+    if (delegateHasTouchesBegan) {
+       [delegate_ quadCurveMenuItemTouchesBegan:self];
     }
     
 }
@@ -90,8 +107,7 @@ highlightedContentImage:(UIImage *)hcimg;
 - (void)touchesMoved:(NSSet *)touches withEvent:(UIEvent *)event {
     // if move out of 2x rect, cancel highlighted.
     CGPoint location = [[touches anyObject] locationInView:self];
-    if (!CGRectContainsPoint(ScaleRect(self.contentImageView.bounds, 2.0f), location))
-    {
+    if (!CGRectContainsPoint(ScaleRect(self.contentImageView.bounds, 2.0f), location)) {
         self.highlighted = NO;
     }
     
@@ -100,23 +116,19 @@ highlightedContentImage:(UIImage *)hcimg;
     self.highlighted = NO;
     // if stop in the area of 2x rect, response to the touches event.
     CGPoint location = [[touches anyObject] locationInView:self];
-    if (CGRectContainsPoint(ScaleRect(self.contentImageView.bounds, 2.0f), location))
-    {
-        if ([_delegate respondsToSelector:@selector(quadCurveMenuItemTouchesEnd:)])
-        {
-            [_delegate quadCurveMenuItemTouchesEnd:self];
+    if (CGRectContainsPoint(ScaleRect(self.contentImageView.bounds, 2.0f), location)) {
+        if (delegateHasTouchesEnded) {
+            [delegate_ quadCurveMenuItemTouchesEnd:self];
         }
     }
 }
 
-- (void)touchesCancelled:(NSSet *)touches withEvent:(UIEvent *)event
-{
+- (void)touchesCancelled:(NSSet *)touches withEvent:(UIEvent *)event {
     self.highlighted = NO;
 }
 
 #pragma mark - instant methods
-- (void)setHighlighted:(BOOL)highlighted
-{
+- (void)setHighlighted:(BOOL)highlighted {
     [super setHighlighted:highlighted];
     [_contentImageView setHighlighted:highlighted];
 }

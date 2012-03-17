@@ -21,11 +21,7 @@
 
 @property (nonatomic, assign) id<QuadCurveMenuItemEventDelegate> delegate;
 
-- (id)initWithImage:(UIImage *)img 
-   highlightedImage:(UIImage *)himg
-       ContentImage:(UIImage *)cimg
-highlightedContentImage:(UIImage *)hcimg;
-
+- (id)initWithImage:(UIImage *)image highlightedImage:(UIImage *)highlightedImage;
 
 @end
 
