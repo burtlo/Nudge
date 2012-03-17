@@ -297,7 +297,7 @@ static CGPoint RotateCGPointAroundCenter(CGPoint point, CGPoint center, float an
     
 }
 
-#pragma mark
+#pragma mark - Expanding / Closing the Menu
 
 - (void)_setMenu {
     
@@ -356,10 +356,14 @@ static CGPoint RotateCGPointAroundCenter(CGPoint point, CGPoint center, float an
         [self performSelector:@selector(moveItemToPoint:) withObject:item afterDelay:timeOffset * x];
     }
     
-    // TODO: fire expansion finish event
+    if (delegateHasDidExpand) {
+        [[self delegate] quadCurveMenuDidExpand:self];
+    }
+    
 }
 
 - (void)performCloseMenu {
+    
     if (delegateHasWillClose) {
         [[self delegate] quadCurveMenuWillClose:self];
     }
@@ -371,7 +375,10 @@ static CGPoint RotateCGPointAroundCenter(CGPoint point, CGPoint center, float an
         [self performSelector:@selector(closeItemToPoint:) withObject:item afterDelay:timeOffset * x];
     }
 
-    // TODO: fire close finish event
+    if (delegateHasDidClose) {
+        [[self delegate] quadCurveMenuDidClose:self];
+    }
+
 }
 
 - (void)setExpanding:(BOOL)expanding {

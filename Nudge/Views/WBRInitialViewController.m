@@ -127,5 +127,20 @@
     return YES;
 }
 
+- (void)quadCurveMenuWillExpand:(QuadCurveMenu *)menu {
+    NSLog(@"Will Expand");
+}
+
+- (void)quadCurveMenuDidExpand:(QuadCurveMenu *)menu {
+    NSLog(@"Did Expand");
+}
+
+- (void)quadCurveMenuWillClose:(QuadCurveMenu *)menu {
+    NSLog(@"Will Close");
+}
+
+- (void)quadCurveMenuDidClose:(QuadCurveMenu *)menu {
+    NSLog(@"Did Close");
+}
 
 @end
