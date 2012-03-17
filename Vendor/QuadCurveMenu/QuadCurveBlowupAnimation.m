@@ -14,8 +14,10 @@
     return @"blowup";
 }
 
-- (CAAnimationGroup *)animationAtPoint:(CGPoint)point {
-
+- (CAAnimationGroup *)animateItem:(QuadCurveMenuItem *)item {
+    
+    CGPoint point = item.center;
+    
     CAKeyframeAnimation *positionAnimation = [CAKeyframeAnimation animationWithKeyPath:@"position"];
     positionAnimation.values = [NSArray arrayWithObjects:[NSValue valueWithCGPoint:point], nil];
     positionAnimation.keyTimes = [NSArray arrayWithObjects: [NSNumber numberWithFloat:.3], nil]; 

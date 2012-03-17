@@ -31,6 +31,8 @@
 
 @property (nonatomic, retain) id<QuadCurveAnimation> selectedAnimation;
 @property (nonatomic, retain) id<QuadCurveAnimation> unselectedanimation;
+@property (nonatomic, retain) id<QuadCurveAnimation> expandItemAnimation;
+@property (nonatomic, retain) id<QuadCurveAnimation> closeItemAnimation;
 
 @property (nonatomic, assign) id<QuadCurveMenuDelegate> delegate;
 @property (nonatomic, assign) id<QuadCurveDataSourceDelegate> dataSource;

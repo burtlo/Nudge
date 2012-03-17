@@ -7,10 +7,11 @@
 //
 
 #import <QuartzCore/QuartzCore.h>
+#import "QuadCurveMenuItem.h"
 
 @protocol QuadCurveAnimation <NSObject>
 
 - (NSString *)animationName;
-- (CAAnimationGroup *)animationAtPoint:(CGPoint)point;
+- (CAAnimationGroup *)animateItem:(QuadCurveMenuItem *)item;
 
 @end

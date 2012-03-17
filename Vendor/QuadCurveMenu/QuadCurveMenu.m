@@ -11,6 +11,8 @@
 
 #import "QuadCurveBlowupAnimation.h"
 #import "QuadCurveShrinkAnimation.h"
+#import "QuadCurveItemExpandAnimation.h"
+#import "QuadCurveItemClosedAnimation.h"
 
 #pragma mark - Constants
 
@@ -70,6 +72,8 @@ static CGPoint RotateCGPointAroundCenter(CGPoint point, CGPoint center, float an
 
 @synthesize selectedAnimation;
 @synthesize unselectedanimation;
+@synthesize expandItemAnimation;
+@synthesize closeItemAnimation;
 
 @synthesize expanding = _expanding;
 @synthesize delegate = _delegate;
@@ -94,6 +98,9 @@ static CGPoint RotateCGPointAroundCenter(CGPoint point, CGPoint center, float an
         [self setSelectedAnimation:[[QuadCurveBlowupAnimation alloc] init]];
         [self setUnselectedanimation:[[QuadCurveShrinkAnimation alloc] init]];        
         
+        [self setExpandItemAnimation:[[QuadCurveItemExpandAnimation alloc] init]];
+        [self setCloseItemAnimation:[[QuadCurveItemClosedAnimation alloc] init]];
+        
         [self setDataSource:dataSource];
         
         
@@ -116,6 +123,8 @@ static CGPoint RotateCGPointAroundCenter(CGPoint point, CGPoint center, float an
 - (void)dealloc {
     [selectedAnimation release];
     [unselectedanimation release];
+    [expandItemAnimation release];
+    [closeItemAnimation release];
     [mainMenuButton release];
     [super dealloc];
 }
@@ -233,7 +242,7 @@ static CGPoint RotateCGPointAroundCenter(CGPoint point, CGPoint center, float an
 
 - (void)animateMenuItems:(NSArray *)items withAnimation:(id<QuadCurveAnimation>)animation {
     for (QuadCurveMenuItem *item in items) {
-        CAAnimationGroup *itemAnimation = [animation animationAtPoint:[item center]];
+        CAAnimationGroup *itemAnimation = [animation animateItem:item];
         [item.layer addAnimation:itemAnimation forKey:[animation animationName]];
         item.center = item.startPoint;
     }
@@ -379,29 +388,9 @@ static CGPoint RotateCGPointAroundCenter(CGPoint point, CGPoint center, float an
     int tag = kQuadCurveMenuItemStartingTag + _flag;
     QuadCurveMenuItem *item = (QuadCurveMenuItem *)[self viewWithTag:tag];
     
-    CAKeyframeAnimation *rotateAnimation = [CAKeyframeAnimation animationWithKeyPath:@"transform.rotation.z"];
-    rotateAnimation.values = [NSArray arrayWithObjects:[NSNumber numberWithFloat:M_PI],[NSNumber numberWithFloat:0.0f], nil];
-    rotateAnimation.duration = 0.5f;
-    rotateAnimation.keyTimes = [NSArray arrayWithObjects:
-                                [NSNumber numberWithFloat:.3], 
-                                [NSNumber numberWithFloat:.4], nil]; 
+    CAAnimationGroup *animationgroup = [[self expandItemAnimation] animateItem:item];
+    [item.layer addAnimation:animationgroup forKey:[[self expandItemAnimation] animationName]];
     
-    CAKeyframeAnimation *positionAnimation = [CAKeyframeAnimation animationWithKeyPath:@"position"];
-    positionAnimation.duration = 0.5f;
-    CGMutablePathRef path = CGPathCreateMutable();
-    CGPathMoveToPoint(path, NULL, item.startPoint.x, item.startPoint.y);
-    CGPathAddLineToPoint(path, NULL, item.farPoint.x, item.farPoint.y);
-    CGPathAddLineToPoint(path, NULL, item.nearPoint.x, item.nearPoint.y); 
-    CGPathAddLineToPoint(path, NULL, item.endPoint.x, item.endPoint.y); 
-    positionAnimation.path = path;
-    CGPathRelease(path);
-    
-    CAAnimationGroup *animationgroup = [CAAnimationGroup animation];
-    animationgroup.animations = [NSArray arrayWithObjects:positionAnimation, rotateAnimation, nil];
-    animationgroup.duration = 0.5f;
-    animationgroup.fillMode = kCAFillModeForwards;
-    animationgroup.timingFunction = [CAMediaTimingFunction functionWithName:kCAMediaTimingFunctionEaseIn];
-    [item.layer addAnimation:animationgroup forKey:@"Expand"];
     item.center = item.endPoint;
     
     _flag ++;
@@ -420,29 +409,9 @@ static CGPoint RotateCGPointAroundCenter(CGPoint point, CGPoint center, float an
     int tag = kQuadCurveMenuItemStartingTag + _flag;
      QuadCurveMenuItem *item = (QuadCurveMenuItem *)[self viewWithTag:tag];
     
-    CAKeyframeAnimation *rotateAnimation = [CAKeyframeAnimation animationWithKeyPath:@"transform.rotation.z"];
-    rotateAnimation.values = [NSArray arrayWithObjects:[NSNumber numberWithFloat:0.0f],[NSNumber numberWithFloat:M_PI * 2],[NSNumber numberWithFloat:0.0f], nil];
-    rotateAnimation.duration = 0.5f;
-    rotateAnimation.keyTimes = [NSArray arrayWithObjects:
-                                [NSNumber numberWithFloat:.0], 
-                                [NSNumber numberWithFloat:.4],
-                                [NSNumber numberWithFloat:.5], nil]; 
-        
-    CAKeyframeAnimation *positionAnimation = [CAKeyframeAnimation animationWithKeyPath:@"position"];
-    positionAnimation.duration = 0.5f;
-    CGMutablePathRef path = CGPathCreateMutable();
-    CGPathMoveToPoint(path, NULL, item.endPoint.x, item.endPoint.y);
-    CGPathAddLineToPoint(path, NULL, item.farPoint.x, item.farPoint.y);
-    CGPathAddLineToPoint(path, NULL, item.startPoint.x, item.startPoint.y); 
-    positionAnimation.path = path;
-    CGPathRelease(path);
+    CAAnimationGroup *animationgroup = [[self closeItemAnimation] animateItem:item];
+    [item.layer addAnimation:animationgroup forKey:[[self closeItemAnimation] animationName]];
     
-    CAAnimationGroup *animationgroup = [CAAnimationGroup animation];
-    animationgroup.animations = [NSArray arrayWithObjects:positionAnimation, rotateAnimation, nil];
-    animationgroup.duration = 0.5f;
-    animationgroup.fillMode = kCAFillModeForwards;
-    animationgroup.timingFunction = [CAMediaTimingFunction functionWithName:kCAMediaTimingFunctionEaseIn];
-    [item.layer addAnimation:animationgroup forKey:@"Close"];
     item.center = item.startPoint;
     _flag --;
     

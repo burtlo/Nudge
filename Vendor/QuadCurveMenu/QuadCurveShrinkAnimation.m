@@ -14,7 +14,9 @@
     return @"shrink";
 }
 
-- (CAAnimationGroup *)animationAtPoint:(CGPoint)point {
+- (CAAnimationGroup *)animateItem:(QuadCurveMenuItem *)item {
+    
+    CGPoint point = item.center;
     
     CAKeyframeAnimation *positionAnimation = [CAKeyframeAnimation animationWithKeyPath:@"position"];
     positionAnimation.values = [NSArray arrayWithObjects:[NSValue valueWithCGPoint:point], nil];
