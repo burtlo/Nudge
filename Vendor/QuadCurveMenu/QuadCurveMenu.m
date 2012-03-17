@@ -95,11 +95,11 @@ static CGPoint RotateCGPointAroundCenter(CGPoint point, CGPoint center, float an
 		[self setMenuWholeAngle:kQuadCurveMenuDefaultMenuWholeAngle];
         [self setStartPoint:CGPointMake(kQuadCurveMenuDefaultStartPointX, kQuadCurveMenuDefaultStartPointY)];
         
-        [self setSelectedAnimation:[[QuadCurveBlowupAnimation alloc] init]];
-        [self setUnselectedanimation:[[QuadCurveShrinkAnimation alloc] init]];        
+        [self setSelectedAnimation:[[[QuadCurveBlowupAnimation alloc] init] autorelease]];
+        [self setUnselectedanimation:[[[QuadCurveShrinkAnimation alloc] init] autorelease]];        
         
-        [self setExpandItemAnimation:[[QuadCurveItemExpandAnimation alloc] init]];
-        [self setCloseItemAnimation:[[QuadCurveItemCloseAnimation alloc] init]];
+        [self setExpandItemAnimation:[[[QuadCurveItemExpandAnimation alloc] init] autorelease]];
+        [self setCloseItemAnimation:[[[QuadCurveItemCloseAnimation alloc] init] autorelease]];
         
         [self setDataSource:dataSource];
         
