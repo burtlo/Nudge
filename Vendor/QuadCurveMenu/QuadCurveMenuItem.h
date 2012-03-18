@@ -26,6 +26,10 @@
 @end
 
 @protocol QuadCurveMenuItemEventDelegate <NSObject>
-- (void)quadCurveMenuItemTouchesBegan:(QuadCurveMenuItem *)item;
-- (void)quadCurveMenuItemTouchesEnd:(QuadCurveMenuItem *)item;
+
+@optional
+
+- (void)quadCurveMenuItemLongPressed:(QuadCurveMenuItem *)item;
+- (void)quadCurveMenuItemTapped:(QuadCurveMenuItem *)item;
+
 @end

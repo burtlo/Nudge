@@ -104,19 +104,20 @@
 
 #pragma mark - QuadCoreMenuDelegate
 
-- (void)quadCurveMenu:(QuadCurveMenu *)menu didBeginTouching:(QuadCurveMenuItem *)menuItem {
-    NSLog(@"Starting Touching An Item");
-}
-- (void)quadCurveMenu:(QuadCurveMenu *)menu didEndTouching:(QuadCurveMenuItem *)menuItem {
-    NSLog(@"Did Select An Item");
+- (void)quadCurveMenu:(QuadCurveMenu *)menu didTapMenuItem:(QuadCurveMenuItem *)menuItem {
+    NSLog(@"Tapped Menu Item");
 }
 
-- (void)quadCurveMenu:(QuadCurveMenu *)menu didBeginTouchingMenu:(QuadCurveMenuItem *)mainMenuItem {
-    NSLog(@"Begin Touched the Main Menu");
+- (void)quadCurveMenu:(QuadCurveMenu *)menu didLongPressMenuItem:(QuadCurveMenuItem *)menuItem {
+    NSLog(@"Long Pressed Menu Item");
 }
 
-- (void)quadCurveMenu:(QuadCurveMenu *)menu didEndTouchingMenu:(QuadCurveMenuItem *)mainMenuItem {
-    NSLog(@"End Touched the Main Menu");    
+- (void)quadCurveMenu:(QuadCurveMenu *)menu didTapMenu:(QuadCurveMenuItem *)mainMenuItem {
+    NSLog(@"Tapped Main Menu");
+}
+
+- (void)quadCurveMenu:(QuadCurveMenu *)menu didLongPressMenu:(QuadCurveMenuItem *)mainMenuItem {
+    NSLog(@"Long Pressed Main Menu");    
 }
 
 - (BOOL)quadCurveMenuShouldExpand:(QuadCurveMenu *)menu {

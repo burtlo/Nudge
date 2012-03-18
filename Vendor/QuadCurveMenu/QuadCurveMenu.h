@@ -48,8 +48,9 @@
 
 @optional
 
-- (void)quadCurveMenu:(QuadCurveMenu *)menu didBeginTouchingMenu:(QuadCurveMenuItem *)mainMenuItem;
-- (void)quadCurveMenu:(QuadCurveMenu *)menu didEndTouchingMenu:(QuadCurveMenuItem *)mainMenuItem;
+
+- (void)quadCurveMenu:(QuadCurveMenu *)menu didTapMenu:(QuadCurveMenuItem *)mainMenuItem;
+- (void)quadCurveMenu:(QuadCurveMenu *)menu didLongPressMenu:(QuadCurveMenuItem *)mainMenuItem;
 
 - (BOOL)quadCurveMenuShouldExpand:(QuadCurveMenu *)menu;
 - (BOOL)quadCurveMenuShouldClose:(QuadCurveMenu *)menu;
@@ -60,8 +61,8 @@
 - (void)quadCurveMenuWillClose:(QuadCurveMenu *)menu;
 - (void)quadCurveMenuDidClose:(QuadCurveMenu *)menu;
 
-- (void)quadCurveMenu:(QuadCurveMenu *)menu didBeginTouching:(QuadCurveMenuItem *)menuItem;
-- (void)quadCurveMenu:(QuadCurveMenu *)menu didEndTouching:(QuadCurveMenuItem *)menuItem;
+- (void)quadCurveMenu:(QuadCurveMenu *)menu didTapMenuItem:(QuadCurveMenuItem *)menuItem;
+- (void)quadCurveMenu:(QuadCurveMenu *)menu didLongPressMenuItem:(QuadCurveMenuItem *)menuItem;
 
 @end
 

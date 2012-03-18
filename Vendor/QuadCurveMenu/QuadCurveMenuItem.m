@@ -21,9 +21,14 @@ static inline CGRect ScaleRect(CGRect rect, float n) {return CGRectMake((rect.si
     
     id<QuadCurveMenuItemEventDelegate> delegate_;
     
-    BOOL delegateHasTouchesBegan;
-    BOOL delegateHasTouchesEnded;
+    BOOL delegateHasLongPressed;
+    BOOL delegateHasTapped;
+    
 }
+
+- (void)longPressOnMenuItem:(UIGestureRecognizer *)sender;
+- (void)singleTapOnMenuItem:(UIGestureRecognizer *)sender;
+
 
 @end
 
@@ -50,6 +55,17 @@ static inline CGRect ScaleRect(CGRect rect, float n) {return CGRectMake((rect.si
         [_contentImageView setHighlightedImage:highlightedImage];
         
         [self addSubview:_contentImageView];
+     
+        
+        UILongPressGestureRecognizer *longPressGesture = [[[UILongPressGestureRecognizer alloc] initWithTarget:self action:@selector(longPressOnMenuItem:)] autorelease];
+        
+        [self addGestureRecognizer:longPressGesture];
+
+        UITapGestureRecognizer *singleTapGesture = [[[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(singleTapOnMenuItem:)] autorelease];
+        
+        [self addGestureRecognizer:singleTapGesture];
+        
+        
         
     }
     return self;
@@ -68,12 +84,31 @@ static inline CGRect ScaleRect(CGRect rect, float n) {return CGRectMake((rect.si
     
     delegate_ = delegate;
     
-    delegateHasTouchesBegan = [delegate respondsToSelector:@selector(quadCurveMenuItemTouchesBegan:)];
-    delegateHasTouchesEnded = [delegate respondsToSelector:@selector(quadCurveMenuItemTouchesEnd:)];
+    delegateHasLongPressed = [delegate respondsToSelector:@selector(quadCurveMenuItemLongPressed:)];
+    delegateHasTapped = [delegate respondsToSelector:@selector(quadCurveMenuItemTapped:)];
     
     [self didChangeValueForKey:@"delegate"];
     
 }
+
+#pragma mark - Gestures
+
+- (void)longPressOnMenuItem:(UIGestureRecognizer *)sender {
+
+    if (delegateHasLongPressed) {
+        [delegate_ quadCurveMenuItemLongPressed:self];
+    }
+
+}
+
+- (void)singleTapOnMenuItem:(UIGestureRecognizer *)sender {
+    
+    if (delegateHasTapped) {
+        [delegate_ quadCurveMenuItemTapped:self];
+    }
+
+}
+
 
 #pragma mark - UIView's methods
 
@@ -95,13 +130,7 @@ static inline CGRect ScaleRect(CGRect rect, float n) {return CGRectMake((rect.si
 }
 
 - (void)touchesBegan:(NSSet *)touches withEvent:(UIEvent *)event {
-    
     self.highlighted = YES;
-    
-    if (delegateHasTouchesBegan) {
-       [delegate_ quadCurveMenuItemTouchesBegan:self];
-    }
-    
 }
 
 - (void)touchesMoved:(NSSet *)touches withEvent:(UIEvent *)event {
@@ -117,9 +146,8 @@ static inline CGRect ScaleRect(CGRect rect, float n) {return CGRectMake((rect.si
     // if stop in the area of 2x rect, response to the touches event.
     CGPoint location = [[touches anyObject] locationInView:self];
     if (CGRectContainsPoint(ScaleRect(self.contentImageView.bounds, 2.0f), location)) {
-        if (delegateHasTouchesEnded) {
-            [delegate_ quadCurveMenuItemTouchesEnd:self];
-        }
+        
+        NSLog(@"TouchEnded on MenuItem");
     }
 }
 

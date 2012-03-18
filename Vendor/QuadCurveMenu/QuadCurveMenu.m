@@ -44,16 +44,16 @@ static CGPoint RotateCGPointAroundCenter(CGPoint point, CGPoint center, float an
     id<QuadCurveMenuDelegate> _delegate;
     id<QuadCurveDataSourceDelegate> dataSource_;
     
-    BOOL delegateHasDidBeginTouchingMenu;
-    BOOL delegateHasDidEndTouchingMenu;
+    BOOL delegateHasDidTapMainMenu;
+    BOOL delegateHasDidLongPressMainMenu;
     BOOL delegateHasShouldExpand;
     BOOL delegateHasShouldClose;
     BOOL delegateHasWillExpand;
     BOOL delegateHasDidExpand;
     BOOL delegateHasWillClose;
     BOOL delegateHasDidClose;
-    BOOL delegateHasDidBeginTouching;
-    BOOL delegateHasDidEndTouching;
+    BOOL delegateHasDidTapMenuItem;
+    BOOL delegateHasDidLongPressMenuItem;
     
 }
 
@@ -62,6 +62,12 @@ static CGPoint RotateCGPointAroundCenter(CGPoint point, CGPoint center, float an
 - (void)performExpandMenu;
 - (void)performCloseMenu;
 - (void)addMenuItemsToView;
+
+- (void)menuItemTapped:(QuadCurveMenuItem *)item;
+- (void)mainMenuItemTapped;
+
+- (void)menuItemLongPressed:(QuadCurveMenuItem *)item;
+- (void)mainMenuItemLongPressed;
 
 @end
 
@@ -135,16 +141,18 @@ static CGPoint RotateCGPointAroundCenter(CGPoint point, CGPoint center, float an
 
     _delegate = delegate;
 
-    delegateHasDidBeginTouchingMenu = [delegate respondsToSelector:@selector(quadCurveMenu:didBeginTouchingMenu:)];
-    delegateHasDidEndTouchingMenu = [delegate respondsToSelector:@selector(quadCurveMenu:didEndTouchingMenu:)];
+    delegateHasDidTapMainMenu = [delegate respondsToSelector:@selector(quadCurveMenu:didTapMenu:)];
+    delegateHasDidLongPressMainMenu = [delegate respondsToSelector:@selector(quadCurveMenu:didLongPressMenu:)];
+    
+    delegateHasDidTapMenuItem = [delegate respondsToSelector:@selector(quadCurveMenu:didTapMenuItem:)];
+    delegateHasDidLongPressMenuItem = [delegate respondsToSelector:@selector(quadCurveMenu:didLongPressMenu:)];
+    
     delegateHasShouldExpand = [delegate respondsToSelector:@selector(quadCurveMenuShouldExpand:)];
     delegateHasShouldClose = [delegate respondsToSelector:@selector(quadCurveMenuShouldClose:)];
     delegateHasWillExpand = [delegate respondsToSelector:@selector(quadCurveMenuWillExpand:)];
     delegateHasDidExpand = [delegate respondsToSelector:@selector(quadCurveMenuDidExpand:)];
     delegateHasWillClose = [delegate respondsToSelector:@selector(quadCurveMenuWillClose:)];
     delegateHasDidClose = [delegate respondsToSelector:@selector(quadCurveMenuDidClose:)];
-    delegateHasDidBeginTouching = [delegate respondsToSelector:@selector(quadCurveMenu:didBeginTouching:)];
-    delegateHasDidEndTouching = [delegate respondsToSelector:@selector(quadCurveMenu:didEndTouching:)];
     
     [self didChangeValueForKey:@"delegate"];
 }
@@ -203,10 +211,22 @@ static CGPoint RotateCGPointAroundCenter(CGPoint point, CGPoint center, float an
 
 #pragma mark - QuadCurveMenuItemEventDelegate Adherence
 
-- (void)mainMenuItemTouchesBegan {
+
+#pragma mark Tap Event
+
+- (void)quadCurveMenuItemTapped:(QuadCurveMenuItem *)item {
     
-    if (delegateHasDidBeginTouchingMenu) {
-        [[self delegate] quadCurveMenu:self didBeginTouchingMenu:mainMenuButton];
+    if (item == mainMenuButton) {
+        [self mainMenuItemTapped];
+    } else {
+        [self menuItemTapped:item];
+    }
+}
+
+- (void)mainMenuItemTapped {
+    
+    if (delegateHasDidTapMainMenu) {
+        [[self delegate] quadCurveMenu:self didTapMenu:mainMenuButton];
     }
     
     BOOL willBeExpandingMenu = ![self isExpanding];
@@ -226,15 +246,52 @@ static CGPoint RotateCGPointAroundCenter(CGPoint point, CGPoint center, float an
     
 }
 
-- (void)quadCurveMenuItemTouchesBegan:(QuadCurveMenuItem *)item {
+- (void)menuItemTapped:(QuadCurveMenuItem *)item {
+
+    if (delegateHasDidTapMenuItem) {
+        [[self delegate] quadCurveMenu:self didTapMenuItem:item];
+    }
+
+    [self animateMenuItems:[NSArray arrayWithObject:item] withAnimation:[self selectedAnimation]];
+    
+    NSPredicate *otherItems = [NSPredicate predicateWithFormat:@"tag != %d",[item tag]];
+    
+    NSArray *otherMenuItems = [[self allMenuItemsBeingDisplayed] filteredArrayUsingPredicate:otherItems];
+    
+    [self animateMenuItems:otherMenuItems withAnimation:[self unselectedanimation]];
+    
+    _expanding = NO;
+    
+    [self rotateMainMenuItemClockwise:[self isExpanding]];
+    
+}
+
+#pragma mark Long Press Event
+
+- (void)quadCurveMenuItemLongPressed:(QuadCurveMenuItem *)item {
     
     if (item == mainMenuButton) {
-        [self mainMenuItemTouchesBegan];
+        [self mainMenuItemLongPressed];
     } else {
-        if (delegateHasDidBeginTouching) {
-            [[self delegate] quadCurveMenu:self didBeginTouching:item];
-        }
+        [self menuItemLongPressed:item];
     }
+
+}
+
+- (void)mainMenuItemLongPressed {
+    
+    if (delegateHasDidLongPressMainMenu) {
+        [[self delegate] quadCurveMenu:self didLongPressMenu:mainMenuButton];
+    }
+    
+}
+
+- (void)menuItemLongPressed:(QuadCurveMenuItem *)item {
+    
+    if (delegateHasDidLongPressMenuItem) {
+        [[self delegate] quadCurveMenu:self didLongPressMenuItem:item];
+    }
+    
 }
 
 #pragma mark - Selection Animations
@@ -263,37 +320,6 @@ static CGPoint RotateCGPointAroundCenter(CGPoint point, CGPoint center, float an
                                           (kQuadCurveMenuItemStartingTag + [[self dataSource] numberOfMenuItems])];
     
     return [[self subviews] filteredArrayUsingPredicate:allMenuItemsPredicate];
-}
-
-- (void)menuItemTouchesEnd:(QuadCurveMenuItem *)item {
-    
-    [self animateMenuItems:[NSArray arrayWithObject:item] withAnimation:[self selectedAnimation]];
-    
-    NSPredicate *otherItems = [NSPredicate predicateWithFormat:@"tag != %d",[item tag]];
-    
-    NSArray *otherMenuItems = [[self allMenuItemsBeingDisplayed] filteredArrayUsingPredicate:otherItems];
-    
-    [self animateMenuItems:otherMenuItems withAnimation:[self unselectedanimation]];
-    
-    _expanding = NO;
-    
-    [self rotateMainMenuItemClockwise:[self isExpanding]];
-    
-    if (delegateHasDidEndTouching) {
-        [[self delegate] quadCurveMenu:self didEndTouching:item];
-    }
-}
-
-- (void)quadCurveMenuItemTouchesEnd:(QuadCurveMenuItem *)item {
-    
-    if (item == mainMenuButton) {
-        if (delegateHasDidEndTouchingMenu) {
-            [[self delegate] quadCurveMenu:self didEndTouchingMenu:mainMenuButton];
-        }
-    } else {
-        [self menuItemTouchesEnd:item];
-    }
-    
 }
 
 #pragma mark - Expanding / Closing the Menu
