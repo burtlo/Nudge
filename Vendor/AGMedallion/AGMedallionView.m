@@ -21,7 +21,12 @@
 
 #import "AGMedallionView.h"
 
-@interface AGMedallionView (Private)
+#define DEGREES_2_RADIANS(x) (0.0174532925 * (x))
+
+@interface AGMedallionView (){
+    // Private
+    CGGradientRef alphaGradient;
+}
 
 - (void)setup;
 
@@ -34,6 +39,9 @@
 @synthesize image, highlightedImage;
 @synthesize highlighted;
 @synthesize borderColor, borderWidth, shadowColor, shadowOffset, shadowBlur;
+
+@synthesize progressColor;
+@synthesize progress;
 
 - (void)setImage:(UIImage *)aImage
 {
@@ -117,6 +125,8 @@
     self.shadowOffset = CGSizeMake(0, 0);
     self.shadowBlur = 2.f;
     self.backgroundColor = [UIColor clearColor];
+    self.progress = 0.0;
+    self.progressColor = [UIColor yellowColor];
 }
 
 - (id)init {
@@ -254,6 +264,30 @@
                                 self.shadowBlur, 
                                 self.shadowColor.CGColor);
     CGContextStrokePath(contextRef);
+    CGContextRestoreGState(contextRef);
+    
+    CGContextSaveGState(contextRef);
+    
+    // Progress Arc
+    
+    CGPoint centerPoint = CGPointMake(imageRect.origin.x + imageRect.size.width / 2,imageRect.origin.y + imageRect.size.height / 2);
+    
+    if (self.progress != 0.0) {
+        
+        float radius = (imageRect.size.height / 2);
+        float endAngle = DEGREES_2_RADIANS((0*359.9)-90);
+        float startAngle = DEGREES_2_RADIANS(270);
+        
+        CGMutablePathRef progressPath = CGPathCreateMutable();
+        CGPathAddArc(progressPath, NULL, centerPoint.x, centerPoint.y, radius, startAngle, endAngle, NO);
+        
+        CGContextSetStrokeColorWithColor(contextRef, self.progressColor.CGColor);
+        CGContextSetLineWidth(contextRef, 3.0);
+        CGContextAddPath(contextRef, progressPath);
+        CGContextStrokePath(contextRef);
+        CGPathRelease(progressPath);
+    }
+    
     CGContextRestoreGState(contextRef);
 }
 

@@ -21,18 +21,7 @@
 
 #import <UIKit/UIKit.h>
 
-@interface AGMedallionView : UIView
-{
-    UIImage *image;
-    UIColor *borderColor;
-    CGFloat borderWidth;
-    UIColor *shadowColor;
-    CGSize shadowOffset;
-    CGFloat shadowBlur;
-    
-    // Private
-    CGGradientRef alphaGradient;
-}
+@interface AGMedallionView : UIView 
 
 @property (nonatomic, retain) UIImage *image;
 @property (nonatomic, retain) UIImage *highlightedImage;
@@ -43,5 +32,8 @@
 @property (nonatomic, assign) CGFloat shadowBlur;
 
 @property (nonatomic, assign) BOOL highlighted;
+
+@property (nonatomic, retain) UIColor *progressColor;
+@property (nonatomic, assign) CGFloat progress;
 
 @end
