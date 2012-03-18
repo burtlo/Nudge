@@ -17,6 +17,7 @@
 @interface QuadCurveMenu : UIView <QuadCurveMenuItemEventDelegate>
 
 @property (nonatomic, getter = isExpanding) BOOL expanding;
+@property (nonatomic, assign) BOOL inProgress;
 
 @property (nonatomic, retain) UIImage *contentImage;
 @property (nonatomic, retain) UIImage *highlightedContentImage;

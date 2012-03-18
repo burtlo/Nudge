@@ -38,7 +38,6 @@ static CGPoint RotateCGPointAroundCenter(CGPoint point, CGPoint center, float an
 #pragma mark - Private Interface
 
 @interface QuadCurveMenu () {
-    NSTimer *_timer;
     QuadCurveMenuItem *mainMenuButton;
     
     id<QuadCurveMenuDelegate> _delegate;
@@ -83,6 +82,8 @@ static CGPoint RotateCGPointAroundCenter(CGPoint point, CGPoint center, float an
 @synthesize closeItemAnimation;
 
 @synthesize expanding = _expanding;
+@dynamic inProgress;
+
 @synthesize delegate = _delegate;
 @synthesize dataSource = dataSource_;
 
@@ -171,6 +172,15 @@ static CGPoint RotateCGPointAroundCenter(CGPoint point, CGPoint center, float an
     }
 }
 
+#pragma mark - Progress
+
+- (void)setInProgress:(BOOL)inProgress {
+    mainMenuButton.inProgress = inProgress;
+}
+
+- (BOOL)inProgress {
+    return mainMenuButton.inProgress;
+}
 
 #pragma mark - images
 
