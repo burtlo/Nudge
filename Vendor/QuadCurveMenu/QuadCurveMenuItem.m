@@ -64,9 +64,7 @@ static inline CGRect ScaleRect(CGRect rect, float n) {return CGRectMake((rect.si
         UITapGestureRecognizer *singleTapGesture = [[[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(singleTapOnMenuItem:)] autorelease];
         
         [self addGestureRecognizer:singleTapGesture];
-        
-        
-        
+
     }
     return self;
 }
@@ -93,7 +91,7 @@ static inline CGRect ScaleRect(CGRect rect, float n) {return CGRectMake((rect.si
 
 #pragma mark - Gestures
 
-- (void)longPressOnMenuItem:(UIGestureRecognizer *)sender {
+- (void)longPressOnMenuItem:(UILongPressGestureRecognizer *)sender {
 
     if (delegateHasLongPressed) {
         [delegate_ quadCurveMenuItemLongPressed:self];
@@ -101,14 +99,13 @@ static inline CGRect ScaleRect(CGRect rect, float n) {return CGRectMake((rect.si
 
 }
 
-- (void)singleTapOnMenuItem:(UIGestureRecognizer *)sender {
+- (void)singleTapOnMenuItem:(UITapGestureRecognizer *)sender {
     
     if (delegateHasTapped) {
         [delegate_ quadCurveMenuItemTapped:self];
     }
 
 }
-
 
 #pragma mark - UIView's methods
 
@@ -131,24 +128,6 @@ static inline CGRect ScaleRect(CGRect rect, float n) {return CGRectMake((rect.si
 
 - (void)touchesBegan:(NSSet *)touches withEvent:(UIEvent *)event {
     self.highlighted = YES;
-}
-
-- (void)touchesMoved:(NSSet *)touches withEvent:(UIEvent *)event {
-    // if move out of 2x rect, cancel highlighted.
-    CGPoint location = [[touches anyObject] locationInView:self];
-    if (!CGRectContainsPoint(ScaleRect(self.contentImageView.bounds, 2.0f), location)) {
-        self.highlighted = NO;
-    }
-    
-}
-- (void)touchesEnded:(NSSet *)touches withEvent:(UIEvent *)event {
-    self.highlighted = NO;
-    // if stop in the area of 2x rect, response to the touches event.
-    CGPoint location = [[touches anyObject] locationInView:self];
-    if (CGRectContainsPoint(ScaleRect(self.contentImageView.bounds, 2.0f), location)) {
-        
-        NSLog(@"TouchEnded on MenuItem");
-    }
 }
 
 - (void)touchesCancelled:(NSSet *)touches withEvent:(UIEvent *)event {
