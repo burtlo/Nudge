@@ -140,6 +140,7 @@
         [self startProgressTimer];
     } else {
         [self stopProgressTimer];
+        contentImageView_.progress = 0.0;
     }
     
     [self didChangeValueForKey:@"inProgress"];

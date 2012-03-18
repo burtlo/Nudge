@@ -43,7 +43,7 @@
 
     facebookUsers = [[WBRFacebookUsers alloc] init];
     
-    facebookUsersMenu = [[QuadCurveMenu alloc] initWithFrame:CGRectMake(0.0, -100.0, 320.0, 200.0) 
+    facebookUsersMenu = [[QuadCurveMenu alloc] initWithFrame:CGRectMake(0.0, 0.0, 320.0, 200.0) 
                                                   dataSource:facebookUsers];
 
     [facebookUsersMenu setContentImage:[UIImage imageNamed:@"facebook.png"]];
@@ -64,20 +64,10 @@
     [super viewDidUnload];
 }
 
-#pragma mark - Actions
-
-- (IBAction)launchFacebook:(id)sender {
-    
-    if ([[WBRFacebook sharedInstance] isNotAuthenticated]) {
-        [[WBRFacebook sharedInstance] authenticate];
-    } else {
-        [self onFacebookLogin:nil];
-    }
-}
-
 #pragma mark - Notifications
 
 - (void)onFacebookLogin:(NSNotification *)notification {
+    [facebookUsersMenu setInProgress:YES];
     [[WBRFacebook sharedInstance] requestFriendsReturnResultsToDelegate:self];
 }
 
@@ -87,14 +77,13 @@
     
 }
 - (void)request:(FBRequest *)request didReceiveResponse:(NSURLResponse *)response {
-    NSLog(@"response");    
+    
 }
 
 - (void)request:(FBRequest *)request didLoad:(id)result {
-    NSLog(@"results");
     
     [facebookUsers updateWithDictionary:result];
-    
+    [facebookUsersMenu setInProgress:NO];
 }
 
 - (void)request:(FBRequest *)request didFailWithError:(NSError *)error {
@@ -113,7 +102,13 @@
 }
 
 - (void)quadCurveMenu:(QuadCurveMenu *)menu didTapMenu:(QuadCurveMenuItem *)mainMenuItem {
-    NSLog(@"Tapped Main Menu");
+    
+    if ([[WBRFacebook sharedInstance] isNotAuthenticated]) {
+        [[WBRFacebook sharedInstance] authenticate];
+    } else {
+        [self onFacebookLogin:nil];
+    }
+
 }
 
 - (void)quadCurveMenu:(QuadCurveMenu *)menu didLongPressMenu:(QuadCurveMenuItem *)mainMenuItem {
