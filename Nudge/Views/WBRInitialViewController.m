@@ -67,8 +67,11 @@
 #pragma mark - Notifications
 
 - (void)onFacebookLogin:(NSNotification *)notification {
-    [facebookUsersMenu setInProgress:YES];
-    [[WBRFacebook sharedInstance] requestFriendsReturnResultsToDelegate:self];
+    
+    if ([facebookUsers outOfDate]) {
+        [facebookUsersMenu setInProgress:YES];
+        [[WBRFacebook sharedInstance] requestFriendsReturnResultsToDelegate:self];
+    }
 }
 
 #pragma mark - FacebookRequestDelegate Adherence
@@ -84,6 +87,7 @@
     
     [facebookUsers updateWithDictionary:result];
     [facebookUsersMenu setInProgress:NO];
+    [facebookUsersMenu expandMenu];
 }
 
 - (void)request:(FBRequest *)request didFailWithError:(NSError *)error {
@@ -116,7 +120,7 @@
 }
 
 - (BOOL)quadCurveMenuShouldExpand:(QuadCurveMenu *)menu {
-    return YES;
+    return ![facebookUsers outOfDate];
 }
 
 - (BOOL)quadCurveMenuShouldClose:(QuadCurveMenu *)menu {

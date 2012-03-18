@@ -10,21 +10,27 @@
 #import "WBRFacebookUser.h"
 #import "WBRFacebookUserMenuItem.h"
 
+#define kFacebookUsersIsStaleAfterSeconds 600
+
+@interface WBRFacebookUsers () {
+    NSDate *lastUpdated;
+}
+
+@end
+
 @implementation WBRFacebookUsers
 
+#pragma mark - Initialization
 
 - (id)init {
-    self = [super init];
-    if (self) {
-        facebookUsers = [NSMutableDictionary dictionary];
-    }
-    return self;
+    return [self initWithDictionary:[NSMutableDictionary dictionary]];
 }
 
 - (id)initWithDictionary:(NSDictionary *)dataDictionary {
     self = [super init];
     if (self) {
         
+        lastUpdated = [NSDate dateWithTimeIntervalSince1970:0];
         facebookUsers = [NSMutableDictionary dictionary];
         
         [self updateWithDictionary:dataDictionary];
@@ -39,6 +45,8 @@
     
     for (NSDictionary *userData in [dataDictionary objectForKey:@"data"]) {
         
+        lastUpdated = [NSDate date];
+        
         NSString *userIdentifier = [userData objectForKey:@"id"];
         
         if ([facebookUsers objectForKey:userIdentifier] == nil) {
@@ -49,6 +57,15 @@
     }
     
     
+}
+
+#pragma mark
+
+- (BOOL)outOfDate {
+    
+    NSLog(@"%@ vs %@",[lastUpdated dateByAddingTimeInterval:kFacebookUsersIsStaleAfterSeconds],[NSDate date]);
+    return ([[lastUpdated dateByAddingTimeInterval:kFacebookUsersIsStaleAfterSeconds] compare:[NSDate date]] == NSOrderedAscending);
+
 }
 
 #pragma mark - QuadCurveDataSourceDelegate Adherence

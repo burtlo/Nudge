@@ -15,4 +15,6 @@
 - (id)initWithDictionary:(NSDictionary *)dataDictionary;
 - (void)updateWithDictionary:(NSDictionary *)dataDictionary;
 
+- (BOOL)outOfDate;
+
 @end
