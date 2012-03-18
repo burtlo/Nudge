@@ -101,6 +101,15 @@
     }
 }
 
+- (void)setProgress:(CGFloat)aProgress {
+    
+    if (progress != aProgress) {
+        progress = aProgress;
+        
+        [self setNeedsDisplay];
+    }
+}
+
 #pragma mark - Object Lifecycle
 
 - (void)dealloc
@@ -126,7 +135,7 @@
     self.shadowBlur = 2.f;
     self.backgroundColor = [UIColor clearColor];
     self.progress = 0.0;
-    self.progressColor = [UIColor yellowColor];
+    self.progressColor = [UIColor grayColor];
 }
 
 - (id)init {
@@ -272,10 +281,10 @@
     
     CGPoint centerPoint = CGPointMake(imageRect.origin.x + imageRect.size.width / 2,imageRect.origin.y + imageRect.size.height / 2);
     
-    if (self.progress != 0.0) {
+    if (self.progress != 0.0f) {
         
         float radius = (imageRect.size.height / 2);
-        float endAngle = DEGREES_2_RADIANS((0*359.9)-90);
+        float endAngle = DEGREES_2_RADIANS((self.progress*359.9)-90);
         float startAngle = DEGREES_2_RADIANS(270);
         
         CGMutablePathRef progressPath = CGPathCreateMutable();

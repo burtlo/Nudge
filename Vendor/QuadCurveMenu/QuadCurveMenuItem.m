@@ -8,39 +8,33 @@
 
 #import "QuadCurveMenuItem.h"
 
-static inline CGRect ScaleRect(CGRect rect, float n) {return CGRectMake((rect.size.width - rect.size.width * n)/ 2, (rect.size.height - rect.size.height * n) / 2, rect.size.width * n, rect.size.height * n);}
-
 @interface QuadCurveMenuItem () {
-    
-    AGMedallionView *_contentImageView;
-    
-    CGPoint _startPoint;
-    CGPoint _endPoint;
-    CGPoint _nearPoint; // near
-    CGPoint _farPoint; // far
-    
-    id<QuadCurveMenuItemEventDelegate> delegate_;
-    
+   
     BOOL delegateHasLongPressed;
     BOOL delegateHasTapped;
     
 }
 
+@property (nonatomic,retain) NSTimer *progressTimer;
+
 - (void)longPressOnMenuItem:(UIGestureRecognizer *)sender;
 - (void)singleTapOnMenuItem:(UIGestureRecognizer *)sender;
-
 
 @end
 
 @implementation QuadCurveMenuItem
 
-@synthesize contentImageView = _contentImageView;
+@synthesize contentImageView = contentImageView_;
 
 @synthesize startPoint = _startPoint;
 @synthesize endPoint = _endPoint;
 @synthesize nearPoint = _nearPoint;
 @synthesize farPoint = _farPoint;
 @synthesize delegate  = delegate_;
+
+@synthesize progressTimer = progressTimer_;
+@synthesize inProgress = inProgress_;
+
 
 #pragma mark - Initialization
 
@@ -50,11 +44,11 @@ static inline CGRect ScaleRect(CGRect rect, float n) {return CGRectMake((rect.si
     if (self) {
         
         self.userInteractionEnabled = YES;
-        _contentImageView = [[AGMedallionView alloc] init];
-        [_contentImageView setImage:image];
-        [_contentImageView setHighlightedImage:highlightedImage];
+        contentImageView_ = [[AGMedallionView alloc] init];
+        [contentImageView_ setImage:image];
+        [contentImageView_ setHighlightedImage:highlightedImage];
         
-        [self addSubview:_contentImageView];
+        [self addSubview:contentImageView_];
      
         
         UILongPressGestureRecognizer *longPressGesture = [[[UILongPressGestureRecognizer alloc] initWithTarget:self action:@selector(longPressOnMenuItem:)] autorelease];
@@ -70,7 +64,9 @@ static inline CGRect ScaleRect(CGRect rect, float n) {return CGRectMake((rect.si
 }
 
 - (void)dealloc {
-    [_contentImageView release];
+    [contentImageView_ release];
+    [progressTimer_ invalidate];
+    [progressTimer_ release];
     [super dealloc];
 }
 
@@ -104,19 +100,62 @@ static inline CGRect ScaleRect(CGRect rect, float n) {return CGRectMake((rect.si
     if (delegateHasTapped) {
         [delegate_ quadCurveMenuItemTapped:self];
     }
-
+    
 }
 
-#pragma mark - UIView's methods
+#pragma mark - In Progress State
+
+- (void)progressChange {
+    
+    self.contentImageView.progress = self.contentImageView.progress + 0.01f;
+    if (self.contentImageView.progress > 1.0) {
+        self.contentImageView.progress = 0.01;
+    }
+    
+    
+}
+
+- (void)startProgressTimer {
+    
+    NSTimer *newProgressTimer = [NSTimer scheduledTimerWithTimeInterval:0.05
+                                                                 target:self 
+                                                               selector:@selector(progressChange) 
+                                                               userInfo:nil 
+                                                                repeats:YES];
+    [self setProgressTimer:newProgressTimer];
+    
+}
+
+- (void)stopProgressTimer {
+    [[self progressTimer] invalidate];
+}
+
+- (void)setInProgress:(BOOL)inProgress {
+    
+    [self willChangeValueForKey:@"inProgress"];
+    
+    inProgress_ = inProgress;
+    
+    if (inProgress) {
+        [self startProgressTimer];
+    } else {
+        [self stopProgressTimer];
+    }
+    
+    [self didChangeValueForKey:@"inProgress"];
+        
+}
+
+#pragma mark - UIView Overridden Methods
 
 - (void)layoutSubviews {
     [super layoutSubviews];
     
     self.bounds = CGRectMake(0, 0, self.image.size.width, self.image.size.height);
     
-    float width = _contentImageView.image.size.width;
-    float height = _contentImageView.image.size.height;
-    _contentImageView.frame = CGRectMake(self.bounds.size.width/2 - width/2, self.bounds.size.height/2 - height/2, width, height);
+    float width = contentImageView_.image.size.width;
+    float height = contentImageView_.image.size.height;
+    contentImageView_.frame = CGRectMake(self.bounds.size.width/2 - width/2, self.bounds.size.height/2 - height/2, width, height);
 }
 
 - (BOOL)pointInside:(CGPoint)point withEvent:(UIEvent *)event {
@@ -134,10 +173,11 @@ static inline CGRect ScaleRect(CGRect rect, float n) {return CGRectMake((rect.si
     self.highlighted = NO;
 }
 
-#pragma mark - instant methods
+#pragma mark - Status Methods
+
 - (void)setHighlighted:(BOOL)highlighted {
     [super setHighlighted:highlighted];
-    [_contentImageView setHighlighted:highlighted];
+    [contentImageView_ setHighlighted:highlighted];
 }
 
 

@@ -10,9 +10,11 @@
 
 @protocol QuadCurveMenuItemEventDelegate;
 
+
 @interface QuadCurveMenuItem : UIImageView
 
 @property (nonatomic, retain, readonly) AGMedallionView *contentImageView;
+@property (nonatomic, assign) BOOL inProgress;
 
 @property (nonatomic) CGPoint startPoint;
 @property (nonatomic) CGPoint endPoint;
@@ -24,6 +26,9 @@
 - (id)initWithImage:(UIImage *)image highlightedImage:(UIImage *)highlightedImage;
 
 @end
+
+
+
 
 @protocol QuadCurveMenuItemEventDelegate <NSObject>
 
