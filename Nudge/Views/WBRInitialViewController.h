@@ -7,7 +7,10 @@
 //
 
 #import "QuadCurveMenu.h"
+#import "PinballMenu.h"
 
 @interface WBRInitialViewController : UIViewController <FBRequestDelegate,QuadCurveMenuDelegate>
+- (IBAction)letItRoll:(id)sender;
+@property (weak, nonatomic) IBOutlet PinballMenu *pinballRow;
 
 @end

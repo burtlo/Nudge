@@ -73,8 +73,8 @@
 - (int)numberOfMenuItems {
     int countOfItems = [[facebookUsers allValues] count];
     
-    if (countOfItems > 20) {
-        countOfItems = 20;
+    if (countOfItems > 10) {
+        countOfItems = 10;
     }
     
     return countOfItems;
@@ -82,6 +82,16 @@
 
 - (id)menuItemAtIndex:(NSInteger)itemIndex {
     return [[WBRFacebookUserMenuItem alloc] initWithFacebookUser:[[facebookUsers allValues] objectAtIndex:itemIndex]];
+}
+
+#pragma mark - PinballDataSource Adherence
+
+- (int)numberOfItems {
+    return [self numberOfMenuItems];
+}
+
+- (QuadCurveMenuItem *)itemAtIndex:(NSInteger)itemIndex {
+    return [self menuItemAtIndex:itemIndex];
 }
 
 @end

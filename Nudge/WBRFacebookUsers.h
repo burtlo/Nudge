@@ -7,8 +7,9 @@
 //
 
 #import "QuadCurveMenu.h"
+#import "PinballMenu.h"
 
-@interface WBRFacebookUsers : NSObject <QuadCurveDataSourceDelegate> {
+@interface WBRFacebookUsers : NSObject <QuadCurveDataSourceDelegate,PinballDataSourceDelegate> {
     NSMutableDictionary *facebookUsers;
 }
 

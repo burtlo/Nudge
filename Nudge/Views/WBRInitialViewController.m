@@ -24,6 +24,7 @@
 @end
 
 @implementation WBRInitialViewController
+@synthesize pinballRow;
 
 @synthesize facebookUsers;
 @synthesize facebookUsersMenu;
@@ -53,6 +54,8 @@
     [[self view] addSubview:facebookUsersMenu];
     
     
+    [pinballRow setDataSource:facebookUsers];
+    
     [[NSNotificationCenter defaultCenter] addObserver:self 
                                              selector:@selector(onFacebookLogin:) 
                                                  name:kNotificationFacebookUserAuthenticated 
@@ -61,6 +64,7 @@
 
 
 - (void)viewDidUnload {
+    [self setPinballRow:nil];
     [super viewDidUnload];
 }
 
@@ -88,6 +92,7 @@
     [facebookUsers updateWithDictionary:result];
     [facebookUsersMenu setInProgress:NO];
     [facebookUsersMenu expandMenu];
+    [pinballRow animateInFromLeft];
 }
 
 - (void)request:(FBRequest *)request didFailWithError:(NSError *)error {
@@ -143,4 +148,8 @@
     NSLog(@"Did Close");
 }
 
+- (IBAction)letItRoll:(id)sender {
+    [pinballRow animateInFromLeft];
+    
+}
 @end

@@ -80,6 +80,7 @@
 		E286ACD71513C8BC000BDCA6 /* unknown-user.png in Resources */ = {isa = PBXBuildFile; fileRef = E286ACD51513C8BC000BDCA6 /* unknown-user.png */; };
 		E286ACD81513C8BC000BDCA6 /* unknown-user@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = E286ACD61513C8BC000BDCA6 /* unknown-user@2x.png */; };
 		E286ACDC1513C99B000BDCA6 /* WBRFacebookUsers.m in Sources */ = {isa = PBXBuildFile; fileRef = E286ACDB1513C99B000BDCA6 /* WBRFacebookUsers.m */; };
+		E2A9D6541516CB2100AC83F3 /* PinballMenu.m in Sources */ = {isa = PBXBuildFile; fileRef = E2A9D6531516CB2100AC83F3 /* PinballMenu.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -225,12 +226,14 @@
 		E227D91C1514027C0074FC74 /* QuadCurveShrinkAnimation.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = QuadCurveShrinkAnimation.m; sourceTree = "<group>"; };
 		E227D925151417890074FC74 /* QuadCurveItemExpandAnimation.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = QuadCurveItemExpandAnimation.h; sourceTree = "<group>"; };
 		E227D926151417890074FC74 /* QuadCurveItemExpandAnimation.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = QuadCurveItemExpandAnimation.m; sourceTree = "<group>"; };
-		E227D928151417A60074FC74 /* QuadCurveItemCloseAnimation.h */ = {isa = PBXFileReference; fileEncoding = 4; path = QuadCurveItemCloseAnimation.h; sourceTree = "<group>"; };
+		E227D928151417A60074FC74 /* QuadCurveItemCloseAnimation.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = QuadCurveItemCloseAnimation.h; sourceTree = "<group>"; };
 		E227D929151417A60074FC74 /* QuadCurveItemCloseAnimation.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = QuadCurveItemCloseAnimation.m; sourceTree = "<group>"; };
 		E286ACD51513C8BC000BDCA6 /* unknown-user.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "unknown-user.png"; path = "Resources/unknown-user.png"; sourceTree = "<group>"; };
 		E286ACD61513C8BC000BDCA6 /* unknown-user@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "unknown-user@2x.png"; path = "Resources/unknown-user@2x.png"; sourceTree = "<group>"; };
 		E286ACDA1513C99B000BDCA6 /* WBRFacebookUsers.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = WBRFacebookUsers.h; sourceTree = "<group>"; };
 		E286ACDB1513C99B000BDCA6 /* WBRFacebookUsers.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = WBRFacebookUsers.m; sourceTree = "<group>"; };
+		E2A9D6521516CB2100AC83F3 /* PinballMenu.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = PinballMenu.h; path = Vendor/Pinball/PinballMenu.h; sourceTree = "<group>"; };
+		E2A9D6531516CB2100AC83F3 /* PinballMenu.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = PinballMenu.m; path = Vendor/Pinball/PinballMenu.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -320,6 +323,7 @@
 		E202CD551513065200D8B9A2 /* Vendor */ = {
 			isa = PBXGroup;
 			children = (
+				E2A9D6501516CAE200AC83F3 /* Pinball */,
 				E202CE381513329300D8B9A2 /* DACircularProgress */,
 				E202CE2C151330FB00D8B9A2 /* Reachability */,
 				E202CDB01513300F00D8B9A2 /* ASIHTTPRequest */,
@@ -566,6 +570,15 @@
 			path = Vendor/DACircularProgress;
 			sourceTree = "<group>";
 		};
+		E2A9D6501516CAE200AC83F3 /* Pinball */ = {
+			isa = PBXGroup;
+			children = (
+				E2A9D6521516CB2100AC83F3 /* PinballMenu.h */,
+				E2A9D6531516CB2100AC83F3 /* PinballMenu.m */,
+			);
+			name = Pinball;
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
@@ -690,6 +703,7 @@
 				E227D91D1514027C0074FC74 /* QuadCurveShrinkAnimation.m in Sources */,
 				E227D927151417890074FC74 /* QuadCurveItemExpandAnimation.m in Sources */,
 				E227D92A151417A60074FC74 /* QuadCurveItemCloseAnimation.m in Sources */,
+				E2A9D6541516CB2100AC83F3 /* PinballMenu.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
