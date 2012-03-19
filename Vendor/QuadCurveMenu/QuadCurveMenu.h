@@ -10,6 +10,13 @@
 #import "QuadCurveMenuItem.h"
 #import "QuadCurveAnimation.h"
 
+@protocol QuadCurveMenuItemFactory <NSObject>
+
+- (QuadCurveMenuItem *)createMenuItemWithDataObject:(id)dataObject;
+
+@end
+
+
 @protocol QuadCurveMenuItemReceiver <NSObject>
 
 - (BOOL)shouldAcceptMenuItem:(QuadCurveMenuItem *)item;
@@ -39,10 +46,13 @@
 @property (nonatomic, assign) CGFloat rotateAngle;
 @property (nonatomic, assign) CGFloat menuWholeAngle;
 
+@property (nonatomic, retain) id<QuadCurveMenuItemFactory> menuItemFactory;
+
 @property (nonatomic, retain) id<QuadCurveAnimation> selectedAnimation;
 @property (nonatomic, retain) id<QuadCurveAnimation> unselectedanimation;
 @property (nonatomic, retain) id<QuadCurveAnimation> expandItemAnimation;
 @property (nonatomic, retain) id<QuadCurveAnimation> closeItemAnimation;
+@property (nonatomic, retain) id<QuadCurveAnimation> addItemAnimation;
 
 @property (nonatomic, assign) id<QuadCurveMenuDelegate> delegate;
 @property (nonatomic, assign) id<QuadCurveDataSourceDelegate> dataSource;
@@ -82,7 +92,6 @@
 
 - (int)numberOfMenuItems;
 - (id)dataObjectAtIndex:(NSInteger)itemIndex;
-- (id)menuItemAtIndex:(NSInteger)itemIndex;
 - (void)insertDataObject:(id)dataObject atIndex:(int)dataIndex;
 
 

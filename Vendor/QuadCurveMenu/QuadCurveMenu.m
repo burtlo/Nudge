@@ -9,10 +9,13 @@
 #import "QuadCurveMenu.h"
 #import <QuartzCore/QuartzCore.h>
 
+#import "QuadCurveDefaultMenuItemFactory.h"
+
 #import "QuadCurveBlowupAnimation.h"
 #import "QuadCurveShrinkAnimation.h"
 #import "QuadCurveItemExpandAnimation.h"
 #import "QuadCurveItemCloseAnimation.h"
+#import "QuadCurveItemMoveAnimation.h"
 
 #pragma mark - Constants
 
@@ -58,6 +61,11 @@ static CGPoint RotateCGPointAroundCenter(CGPoint point, CGPoint center, float an
     
 }
 
+- (QuadCurveMenuItem *)menuItemForDataObject:(id)dataObject;
+- (void)addMenuItemsToView;
+- (void)addMenuItemsToExpandedView;
+- (void)addMenuItem:(QuadCurveMenuItem *)item toViewAtPosition:(NSRange)position;
+
 - (void)animateMenuItemToEndPoint:(QuadCurveMenuItem *)item;
 - (void)animateItemToStartPoint:(QuadCurveMenuItem *)item;
 - (void)performExpandMenu;
@@ -78,10 +86,13 @@ static CGPoint RotateCGPointAroundCenter(CGPoint point, CGPoint center, float an
 
 @synthesize nearRadius, endRadius, farRadius, timeOffset, rotateAngle, menuWholeAngle, startPoint;
 
+@synthesize menuItemFactory;
+
 @synthesize selectedAnimation;
 @synthesize unselectedanimation;
 @synthesize expandItemAnimation;
 @synthesize closeItemAnimation;
+@synthesize addItemAnimation;
 
 @synthesize expanding = _expanding;
 @dynamic inProgress;
@@ -105,11 +116,15 @@ static CGPoint RotateCGPointAroundCenter(CGPoint point, CGPoint center, float an
 		self.menuWholeAngle = kQuadCurveMenuDefaultMenuWholeAngle;
         self.startPoint = CGPointMake(kQuadCurveMenuDefaultStartPointX, kQuadCurveMenuDefaultStartPointY);
         
+        self.menuItemFactory = [[[QuadCurveDefaultMenuItemFactory alloc] init] autorelease];
+        
         self.selectedAnimation = [[[QuadCurveBlowupAnimation alloc] init] autorelease];
         self.unselectedanimation = [[[QuadCurveShrinkAnimation alloc] init] autorelease];
         
         self.expandItemAnimation = [[[QuadCurveItemExpandAnimation alloc] init] autorelease];
         self.closeItemAnimation = [[[QuadCurveItemCloseAnimation alloc] init] autorelease];
+        
+        self.addItemAnimation = [[[QuadCurveItemMoveAnimation alloc] init] autorelease];
         
         self.dataSource = dataSource;
         
@@ -132,6 +147,7 @@ static CGPoint RotateCGPointAroundCenter(CGPoint point, CGPoint center, float an
     [unselectedanimation release];
     [expandItemAnimation release];
     [closeItemAnimation release];
+    [addItemAnimation release];
     [mainMenuButton release];
     [super dealloc];
 }
@@ -387,6 +403,78 @@ static CGPoint RotateCGPointAroundCenter(CGPoint point, CGPoint center, float an
     NSLog(@"menu item is appearing over %f,%f",point.x,point.y);
 }
 
+#pragma mark - QuadCurveMenuItem Management
+
+- (void)addMenuItem:(QuadCurveMenuItem *)item toViewAtPosition:(NSRange)position {
+    
+    int index = position.location;
+    int count = position.length;
+    
+    [dataObjectToMenuItemView setObject:item forKey:item.dataObject];
+    item.tag = kQuadCurveMenuItemStartingTag + index;
+    item.delegate = self;
+    
+    item.startPoint = startPoint;
+    CGPoint endPoint = CGPointMake(startPoint.x + endRadius * sinf(index * menuWholeAngle / count), startPoint.y - endRadius * cosf(index * menuWholeAngle / count));
+    item.endPoint = RotateCGPointAroundCenter(endPoint, startPoint, rotateAngle);
+    CGPoint nearPoint = CGPointMake(startPoint.x + nearRadius * sinf(index * menuWholeAngle / count), startPoint.y - nearRadius * cosf(index * menuWholeAngle / count));
+    item.nearPoint = RotateCGPointAroundCenter(nearPoint, startPoint, rotateAngle);
+    CGPoint farPoint = CGPointMake(startPoint.x + farRadius * sinf(index * menuWholeAngle / count), startPoint.y - farRadius * cosf(index * menuWholeAngle / count));
+    item.farPoint = RotateCGPointAroundCenter(farPoint, startPoint, rotateAngle);  
+    
+    
+    [self insertSubview:item belowSubview:mainMenuButton];
+}
+
+- (QuadCurveMenuItem *)menuItemForDataObject:(id)dataObject {
+    return [dataObjectToMenuItemView objectForKey:dataObject];
+}
+
+- (void)addMenuItemsToView {
+    
+	int total = [[self dataSource] numberOfMenuItems];
+    
+    for (int index = 0; index < total; index ++) {
+        
+        id dataObject = [[self dataSource] dataObjectAtIndex:index];
+        
+        QuadCurveMenuItem *item = [self menuItemForDataObject:dataObject];
+        
+        if (item == nil) { 
+            item = [[self menuItemFactory] createMenuItemWithDataObject:dataObject];
+        }
+        
+        [self addMenuItem:item toViewAtPosition:NSMakeRange(index,total)];
+        item.center = item.startPoint;
+        
+    }
+}
+
+- (void)addMenuItemsToExpandedView {
+    
+	int count = [[self dataSource] numberOfMenuItems];
+    
+    
+    for (int index = 0; index < count; index ++) {
+        
+        id dataObject = [[self dataSource] dataObjectAtIndex:index];
+        QuadCurveMenuItem *item = [self menuItemForDataObject:dataObject];
+        
+        if (item == nil) { 
+            item = [[self menuItemFactory] createMenuItemWithDataObject:dataObject];
+        }
+        
+        [self addMenuItem:item toViewAtPosition:NSMakeRange(index,count)];
+        item.startPoint = startPoint;
+
+        CAAnimationGroup *moveAnimation = [[self addItemAnimation] animationForItem:item];
+        
+        [item.layer addAnimation:moveAnimation forKey:[[self addItemAnimation] animationName]];
+        item.center = item.endPoint;
+        
+    }
+}
+
 #pragma mark - Animate MenuItems Expanded
 
 - (void)performExpandMenu {
@@ -408,98 +496,6 @@ static CGPoint RotateCGPointAroundCenter(CGPoint point, CGPoint center, float an
         [[self delegate] quadCurveMenuDidExpand:self];
     }
     
-}
-
-- (void)addMenuItemsToExpandedView {
-
-	int count = [[self dataSource] numberOfMenuItems];
-    
-    
-    for (int i = 0; i < count; i ++) {
-        
-        // given the current 
-        QuadCurveMenuItem *item = [self menuItemForDataObject:[[self dataSource] dataObjectAtIndex:i]];
-        
-        if (item == nil) { 
-            item = [[self dataSource] menuItemAtIndex:i];
-        }
-        
-        item.delegate = self;
-        item.tag = kQuadCurveMenuItemStartingTag + i;
-        
-        item.startPoint = startPoint;
-        
-        CGPoint endPoint = CGPointMake(startPoint.x + endRadius * sinf(i * menuWholeAngle / count), startPoint.y - endRadius * cosf(i * menuWholeAngle / count));
-        item.endPoint = RotateCGPointAroundCenter(endPoint, startPoint, rotateAngle);
-        CGPoint nearPoint = CGPointMake(startPoint.x + nearRadius * sinf(i * menuWholeAngle / count), startPoint.y - nearRadius * cosf(i * menuWholeAngle / count));
-        item.nearPoint = RotateCGPointAroundCenter(nearPoint, startPoint, rotateAngle);
-        CGPoint farPoint = CGPointMake(startPoint.x + farRadius * sinf(i * menuWholeAngle / count), startPoint.y - farRadius * cosf(i * menuWholeAngle / count));
-        item.farPoint = RotateCGPointAroundCenter(farPoint, startPoint, rotateAngle);
-        
-        
-        
-        CAKeyframeAnimation *rotateAnimation = [CAKeyframeAnimation animationWithKeyPath:@"transform.rotation.z"];
-        rotateAnimation.values = [NSArray arrayWithObjects:[NSNumber numberWithFloat:0.0f],[NSNumber numberWithFloat:M_PI * 2],[NSNumber numberWithFloat:0.0f], nil];
-        rotateAnimation.duration = 0.5f;
-        rotateAnimation.keyTimes = [NSArray arrayWithObjects:
-                                    [NSNumber numberWithFloat:.0], 
-                                    [NSNumber numberWithFloat:.4],
-                                    [NSNumber numberWithFloat:.5], nil]; 
-        
-        CAKeyframeAnimation *positionAnimation = [CAKeyframeAnimation animationWithKeyPath:@"position"];
-        positionAnimation.duration = 0.5f;
-        CGMutablePathRef path = CGPathCreateMutable();
-        CGPathMoveToPoint(path, NULL, item.center.x, item.center.y);
-        CGPathAddLineToPoint(path, NULL, endPoint.x, endPoint.y);
-        positionAnimation.path = path;
-        CGPathRelease(path);
-        
-        CAAnimationGroup *animationgroup = [CAAnimationGroup animation];
-        animationgroup.animations = [NSArray arrayWithObjects:positionAnimation, rotateAnimation, nil];
-        animationgroup.duration = 0.5f;
-        animationgroup.fillMode = kCAFillModeForwards;
-        animationgroup.timingFunction = [CAMediaTimingFunction functionWithName:kCAMediaTimingFunctionEaseIn];
-            
-        [item.layer addAnimation:animationgroup forKey:@"updatePosition"];
-        item.center = item.endPoint;
-        
-		[self insertSubview:item belowSubview:mainMenuButton];
-    }
-}
-
-- (QuadCurveMenuItem *)menuItemForDataObject:(id)dataObject {
-    return [dataObjectToMenuItemView objectForKey:dataObject];
-//    int menuItemTag = [[dataObjectsToViewTags objectForKey:dataObject] intValue];
-//    return (menuItemTag ? (QuadCurveMenuItem *)[self viewWithTag:menuItemTag] : nil);
-}
-
-- (void)addMenuItemsToView {
-    
-	int count = [[self dataSource] numberOfMenuItems];
-    
-    for (int i = 0; i < count; i ++) {
-        
-        QuadCurveMenuItem *item = [self menuItemForDataObject:[[self dataSource] dataObjectAtIndex:i]];
-        
-        if (item == nil) { 
-            item = [[self dataSource] menuItemAtIndex:i];
-        }
-        
-        item.tag = kQuadCurveMenuItemStartingTag + i;
-        
-        [dataObjectToMenuItemView setObject:item forKey:item.dataObject];
-        
-        item.startPoint = startPoint;
-        CGPoint endPoint = CGPointMake(startPoint.x + endRadius * sinf(i * menuWholeAngle / count), startPoint.y - endRadius * cosf(i * menuWholeAngle / count));
-        item.endPoint = RotateCGPointAroundCenter(endPoint, startPoint, rotateAngle);
-        CGPoint nearPoint = CGPointMake(startPoint.x + nearRadius * sinf(i * menuWholeAngle / count), startPoint.y - nearRadius * cosf(i * menuWholeAngle / count));
-        item.nearPoint = RotateCGPointAroundCenter(nearPoint, startPoint, rotateAngle);
-        CGPoint farPoint = CGPointMake(startPoint.x + farRadius * sinf(i * menuWholeAngle / count), startPoint.y - farRadius * cosf(i * menuWholeAngle / count));
-        item.farPoint = RotateCGPointAroundCenter(farPoint, startPoint, rotateAngle);  
-        item.center = item.startPoint;
-        item.delegate = self;
-		[self insertSubview:item belowSubview:mainMenuButton];
-    }
 }
 
 - (void)animateMenuItemToEndPoint:(QuadCurveMenuItem *)item {

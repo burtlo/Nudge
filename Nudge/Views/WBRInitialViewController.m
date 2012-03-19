@@ -10,6 +10,7 @@
 #import "WBRFacebook.h"
 #import "WBRFacebookUser.h"
 #import "WBRFacebookUsers.h"
+#import "WBRFacebookMenuItemFactory.h"
 
 #import "QuadCurveMenu.h"
 #import "QuadCurveMenuItem.h"
@@ -47,6 +48,7 @@
     facebookUsersMenu = [[QuadCurveMenu alloc] initWithFrame:CGRectMake(0.0, 0.0, 320.0, 400.0) 
                                                   dataSource:facebookUsers];
 
+    [facebookUsersMenu setMenuItemFactory:[[WBRFacebookMenuItemFactory alloc] init]];
     [facebookUsersMenu setContentImage:[UIImage imageNamed:@"facebook.png"]];
     [facebookUsersMenu setHighlightedContentImage:[UIImage imageNamed:@"facebook.png"]];
     [facebookUsersMenu setDelegate:self];

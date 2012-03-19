@@ -73,6 +73,9 @@
 		E202CE351513317800D8B9A2 /* Security.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E202CE341513317700D8B9A2 /* Security.framework */; };
 		E202CE371513318800D8B9A2 /* SystemConfiguration.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E202CE361513318700D8B9A2 /* SystemConfiguration.framework */; };
 		E202CE3B1513329300D8B9A2 /* DACircularProgressView.m in Sources */ = {isa = PBXBuildFile; fileRef = E202CE3A1513329300D8B9A2 /* DACircularProgressView.m */; };
+		E215578F1517158700235191 /* QuadCurveItemMoveAnimation.m in Sources */ = {isa = PBXBuildFile; fileRef = E215578E1517158700235191 /* QuadCurveItemMoveAnimation.m */; };
+		E215579B15171BE100235191 /* WBRFacebookMenuItemFactory.m in Sources */ = {isa = PBXBuildFile; fileRef = E215579A15171BE100235191 /* WBRFacebookMenuItemFactory.m */; };
+		E21557A115171E8F00235191 /* QuadCurveDefaultMenuItemFactory.m in Sources */ = {isa = PBXBuildFile; fileRef = E21557A015171E8F00235191 /* QuadCurveDefaultMenuItemFactory.m */; };
 		E227D91A1514026A0074FC74 /* QuadCurveBlowupAnimation.m in Sources */ = {isa = PBXBuildFile; fileRef = E227D9191514026A0074FC74 /* QuadCurveBlowupAnimation.m */; };
 		E227D91D1514027C0074FC74 /* QuadCurveShrinkAnimation.m in Sources */ = {isa = PBXBuildFile; fileRef = E227D91C1514027C0074FC74 /* QuadCurveShrinkAnimation.m */; };
 		E227D927151417890074FC74 /* QuadCurveItemExpandAnimation.m in Sources */ = {isa = PBXBuildFile; fileRef = E227D926151417890074FC74 /* QuadCurveItemExpandAnimation.m */; };
@@ -219,6 +222,12 @@
 		E202CE361513318700D8B9A2 /* SystemConfiguration.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SystemConfiguration.framework; path = System/Library/Frameworks/SystemConfiguration.framework; sourceTree = SDKROOT; };
 		E202CE391513329300D8B9A2 /* DACircularProgressView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DACircularProgressView.h; sourceTree = "<group>"; };
 		E202CE3A1513329300D8B9A2 /* DACircularProgressView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DACircularProgressView.m; sourceTree = "<group>"; };
+		E215578D1517158700235191 /* QuadCurveItemMoveAnimation.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = QuadCurveItemMoveAnimation.h; sourceTree = "<group>"; };
+		E215578E1517158700235191 /* QuadCurveItemMoveAnimation.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = QuadCurveItemMoveAnimation.m; sourceTree = "<group>"; };
+		E215579915171BE100235191 /* WBRFacebookMenuItemFactory.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = WBRFacebookMenuItemFactory.h; sourceTree = "<group>"; };
+		E215579A15171BE100235191 /* WBRFacebookMenuItemFactory.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = WBRFacebookMenuItemFactory.m; sourceTree = "<group>"; };
+		E215579F15171E8F00235191 /* QuadCurveDefaultMenuItemFactory.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = QuadCurveDefaultMenuItemFactory.h; sourceTree = "<group>"; };
+		E21557A015171E8F00235191 /* QuadCurveDefaultMenuItemFactory.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = QuadCurveDefaultMenuItemFactory.m; sourceTree = "<group>"; };
 		E227D916151402090074FC74 /* QuadCurveAnimation.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = QuadCurveAnimation.h; sourceTree = "<group>"; };
 		E227D9181514026A0074FC74 /* QuadCurveBlowupAnimation.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = QuadCurveBlowupAnimation.h; sourceTree = "<group>"; };
 		E227D9191514026A0074FC74 /* QuadCurveBlowupAnimation.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = QuadCurveBlowupAnimation.m; sourceTree = "<group>"; };
@@ -394,17 +403,10 @@
 				E202CD7A15131A3000D8B9A2 /* QuadCurveMenu.m */,
 				E202CD7B15131A3000D8B9A2 /* QuadCurveMenuItem.h */,
 				E202CD7C15131A3000D8B9A2 /* QuadCurveMenuItem.m */,
-				E202CDAD151326BB00D8B9A2 /* WBRFacebookUserMenuItem.h */,
-				E202CDAE151326BC00D8B9A2 /* WBRFacebookUserMenuItem.m */,
-				E227D916151402090074FC74 /* QuadCurveAnimation.h */,
-				E227D9181514026A0074FC74 /* QuadCurveBlowupAnimation.h */,
-				E227D9191514026A0074FC74 /* QuadCurveBlowupAnimation.m */,
-				E227D91B1514027C0074FC74 /* QuadCurveShrinkAnimation.h */,
-				E227D91C1514027C0074FC74 /* QuadCurveShrinkAnimation.m */,
-				E227D925151417890074FC74 /* QuadCurveItemExpandAnimation.h */,
-				E227D926151417890074FC74 /* QuadCurveItemExpandAnimation.m */,
-				E227D928151417A60074FC74 /* QuadCurveItemCloseAnimation.h */,
-				E227D929151417A60074FC74 /* QuadCurveItemCloseAnimation.m */,
+				E215579F15171E8F00235191 /* QuadCurveDefaultMenuItemFactory.h */,
+				E21557A015171E8F00235191 /* QuadCurveDefaultMenuItemFactory.m */,
+				E215579E15171BFC00235191 /* Animations */,
+				E215579D15171BEB00235191 /* Facebook Menu Item */,
 			);
 			name = QuadCurveMenu;
 			path = Vendor/QuadCurveMenu;
@@ -570,6 +572,35 @@
 			path = Vendor/DACircularProgress;
 			sourceTree = "<group>";
 		};
+		E215579D15171BEB00235191 /* Facebook Menu Item */ = {
+			isa = PBXGroup;
+			children = (
+				E202CDAD151326BB00D8B9A2 /* WBRFacebookUserMenuItem.h */,
+				E202CDAE151326BC00D8B9A2 /* WBRFacebookUserMenuItem.m */,
+				E215579915171BE100235191 /* WBRFacebookMenuItemFactory.h */,
+				E215579A15171BE100235191 /* WBRFacebookMenuItemFactory.m */,
+			);
+			name = "Facebook Menu Item";
+			sourceTree = "<group>";
+		};
+		E215579E15171BFC00235191 /* Animations */ = {
+			isa = PBXGroup;
+			children = (
+				E227D916151402090074FC74 /* QuadCurveAnimation.h */,
+				E227D9181514026A0074FC74 /* QuadCurveBlowupAnimation.h */,
+				E227D9191514026A0074FC74 /* QuadCurveBlowupAnimation.m */,
+				E227D91B1514027C0074FC74 /* QuadCurveShrinkAnimation.h */,
+				E227D91C1514027C0074FC74 /* QuadCurveShrinkAnimation.m */,
+				E227D925151417890074FC74 /* QuadCurveItemExpandAnimation.h */,
+				E227D926151417890074FC74 /* QuadCurveItemExpandAnimation.m */,
+				E227D928151417A60074FC74 /* QuadCurveItemCloseAnimation.h */,
+				E227D929151417A60074FC74 /* QuadCurveItemCloseAnimation.m */,
+				E215578D1517158700235191 /* QuadCurveItemMoveAnimation.h */,
+				E215578E1517158700235191 /* QuadCurveItemMoveAnimation.m */,
+			);
+			name = Animations;
+			sourceTree = "<group>";
+		};
 		E2A9D6501516CAE200AC83F3 /* Pinball */ = {
 			isa = PBXGroup;
 			children = (
@@ -704,6 +735,9 @@
 				E227D927151417890074FC74 /* QuadCurveItemExpandAnimation.m in Sources */,
 				E227D92A151417A60074FC74 /* QuadCurveItemCloseAnimation.m in Sources */,
 				E2A9D6541516CB2100AC83F3 /* PinballMenu.m in Sources */,
+				E215578F1517158700235191 /* QuadCurveItemMoveAnimation.m in Sources */,
+				E215579B15171BE100235191 /* WBRFacebookMenuItemFactory.m in Sources */,
+				E21557A115171E8F00235191 /* QuadCurveDefaultMenuItemFactory.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

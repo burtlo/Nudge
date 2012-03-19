@@ -9,7 +9,7 @@
 #import "AGMedallionView.h"
 
 @protocol QuadCurveMenuItemEventDelegate;
-
+@protocol QuadCurveMenuItemFactory;
 
 @interface QuadCurveMenuItem : UIControl
 
@@ -33,8 +33,6 @@
 @end
 
 
-
-
 @protocol QuadCurveMenuItemEventDelegate <NSObject>
 
 @optional
@@ -44,3 +42,5 @@
 - (void)quadCurveMenuItemDragged:(QuadCurveMenuItem *)item withPanGesture:(UIPanGestureRecognizer *)gesture;
 
 @end
+
+
