@@ -105,9 +105,13 @@ static CGPoint RotateCGPointAroundCenter(CGPoint point, CGPoint center, float an
 
 #pragma mark - Initialization
 
-- (id)initWithFrame:(CGRect)frame dataSource:(id<QuadCurveDataSourceDelegate>)dataSource {
+- (id)initWithFrame:(CGRect)frame 
+         dataSource:(id<QuadCurveDataSourceDelegate>)dataSource 
+    mainMenuFactory:(id<QuadCurveMenuItemFactory>)mainFactory 
+    menuItemFactory:(id<QuadCurveMenuItemFactory>)menuItemFactory_ {
     
     self = [super initWithFrame:frame];
+    
     if (self) {
         self.backgroundColor = [UIColor clearColor];
 		
@@ -118,10 +122,9 @@ static CGPoint RotateCGPointAroundCenter(CGPoint point, CGPoint center, float an
         self.rotateAngle = kQuadCurveMenuDefaultRotateAngle;
 		self.menuWholeAngle = kQuadCurveMenuDefaultMenuWholeAngle;
         self.startPoint = CGPointMake(kQuadCurveMenuDefaultStartPointX, kQuadCurveMenuDefaultStartPointY);
-
-        self.mainMenuItemFactory = [[[QuadCurveDefaultMainMenuItemFactory alloc] init] autorelease];
         
-        self.menuItemFactory = [[[QuadCurveDefaultMenuItemFactory alloc] init] autorelease];
+        self.mainMenuItemFactory = mainFactory;
+        self.menuItemFactory = menuItemFactory_;
         
         self.selectedAnimation = [[[QuadCurveBlowupAnimation alloc] init] autorelease];
         self.unselectedanimation = [[[QuadCurveShrinkAnimation alloc] init] autorelease];
@@ -132,9 +135,18 @@ static CGPoint RotateCGPointAroundCenter(CGPoint point, CGPoint center, float an
         self.addItemAnimation = [[[QuadCurveItemMoveAnimation alloc] init] autorelease];
         
         self.dataSource = dataSource;
-
+        
     }
     return self;
+}
+
+- (id)initWithFrame:(CGRect)frame dataSource:(id<QuadCurveDataSourceDelegate>)dataSource {
+    
+    return [self initWithFrame:frame 
+                    dataSource:dataSource 
+               mainMenuFactory:[[[QuadCurveDefaultMainMenuItemFactory alloc] init] autorelease]
+               menuItemFactory:[[[QuadCurveDefaultMenuItemFactory alloc] init] autorelease]];
+    
 }
 
 #pragma mark - Deallocation

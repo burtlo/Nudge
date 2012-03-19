@@ -58,6 +58,11 @@
 
 - (id)initWithFrame:(CGRect)frame dataSource:(id<QuadCurveDataSourceDelegate>)dataSource;
 
+- (id)initWithFrame:(CGRect)frame 
+         dataSource:(id<QuadCurveDataSourceDelegate>)dataSource 
+    mainMenuFactory:(id<QuadCurveMenuItemFactory>)mainFactory 
+    menuItemFactory:(id<QuadCurveMenuItemFactory>)menuItemFactory;
+
 - (void)expandMenu;
 - (void)closeMenu;
 - (void)updateMenu;
