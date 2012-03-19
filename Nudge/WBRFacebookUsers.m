@@ -73,8 +73,8 @@
 - (int)numberOfMenuItems {
     int countOfItems = [[facebookUsers allValues] count];
     
-    if (countOfItems > 10) {
-        countOfItems = 10;
+    if (countOfItems > 20) {
+        countOfItems = 20;
     }
     
     return countOfItems;
