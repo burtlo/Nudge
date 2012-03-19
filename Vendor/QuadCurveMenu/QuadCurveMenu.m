@@ -62,9 +62,11 @@ static CGPoint RotateCGPointAroundCenter(CGPoint point, CGPoint center, float an
 }
 
 - (QuadCurveMenuItem *)menuItemForDataObject:(id)dataObject;
+
+- (void)addMenuItem:(QuadCurveMenuItem *)item toViewAtPosition:(NSRange)position;
+- (void)addMenuItemsToViewAndPerform:(void (^)(QuadCurveMenuItem *item))block;
 - (void)addMenuItemsToView;
 - (void)addMenuItemsToExpandedView;
-- (void)addMenuItem:(QuadCurveMenuItem *)item toViewAtPosition:(NSRange)position;
 
 - (void)animateMenuItemToEndPoint:(QuadCurveMenuItem *)item;
 - (void)animateItemToStartPoint:(QuadCurveMenuItem *)item;
@@ -422,58 +424,51 @@ static CGPoint RotateCGPointAroundCenter(CGPoint point, CGPoint center, float an
     CGPoint farPoint = CGPointMake(startPoint.x + farRadius * sinf(index * menuWholeAngle / count), startPoint.y - farRadius * cosf(index * menuWholeAngle / count));
     item.farPoint = RotateCGPointAroundCenter(farPoint, startPoint, rotateAngle);  
     
-    
     [self insertSubview:item belowSubview:mainMenuButton];
 }
 
 - (QuadCurveMenuItem *)menuItemForDataObject:(id)dataObject {
-    return [dataObjectToMenuItemView objectForKey:dataObject];
+    
+    QuadCurveMenuItem *item;
+    
+    if ((item = [dataObjectToMenuItemView objectForKey:dataObject])) {
+        return item;
+    } else {
+        return [[self menuItemFactory] createMenuItemWithDataObject:dataObject];
+    }
 }
 
-- (void)addMenuItemsToView {
-    
-	int total = [[self dataSource] numberOfMenuItems];
+- (void)addMenuItemsToViewAndPerform:(void (^)(QuadCurveMenuItem *item))block {
+
+    int total = [[self dataSource] numberOfMenuItems];
     
     for (int index = 0; index < total; index ++) {
         
         id dataObject = [[self dataSource] dataObjectAtIndex:index];
-        
         QuadCurveMenuItem *item = [self menuItemForDataObject:dataObject];
         
-        if (item == nil) { 
-            item = [[self menuItemFactory] createMenuItemWithDataObject:dataObject];
-        }
-        
         [self addMenuItem:item toViewAtPosition:NSMakeRange(index,total)];
-        item.center = item.startPoint;
         
+        block(item);
     }
+    
+}
+
+- (void)addMenuItemsToView {
+    [self addMenuItemsToViewAndPerform:^(QuadCurveMenuItem *item) {
+        item.center = item.startPoint;
+    }];
 }
 
 - (void)addMenuItemsToExpandedView {
     
-	int count = [[self dataSource] numberOfMenuItems];
-    
-    
-    for (int index = 0; index < count; index ++) {
-        
-        id dataObject = [[self dataSource] dataObjectAtIndex:index];
-        QuadCurveMenuItem *item = [self menuItemForDataObject:dataObject];
-        
-        if (item == nil) { 
-            item = [[self menuItemFactory] createMenuItemWithDataObject:dataObject];
-        }
-        
-        [self addMenuItem:item toViewAtPosition:NSMakeRange(index,count)];
-        item.startPoint = startPoint;
-
+    [self addMenuItemsToViewAndPerform:^(QuadCurveMenuItem *item) {
         CAAnimationGroup *moveAnimation = [[self addItemAnimation] animationForItem:item];
-        
         [item.layer addAnimation:moveAnimation forKey:[[self addItemAnimation] animationName]];
         item.center = item.endPoint;
-        
-    }
+    }];
 }
+     
 
 #pragma mark - Animate MenuItems Expanded
 
