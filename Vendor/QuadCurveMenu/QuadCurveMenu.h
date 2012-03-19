@@ -35,9 +35,6 @@
 @property (nonatomic, getter = isExpanding) BOOL expanding;
 @property (nonatomic, assign) BOOL inProgress;
 
-@property (nonatomic, retain) UIImage *contentImage;
-@property (nonatomic, retain) UIImage *highlightedContentImage;
-
 @property (nonatomic, assign) CGFloat nearRadius;
 @property (nonatomic, assign) CGFloat endRadius;
 @property (nonatomic, assign) CGFloat farRadius;
@@ -46,6 +43,8 @@
 @property (nonatomic, assign) CGFloat rotateAngle;
 @property (nonatomic, assign) CGFloat menuWholeAngle;
 
+
+@property (nonatomic, retain) id<QuadCurveMenuItemFactory> mainMenuItemFactory;
 @property (nonatomic, retain) id<QuadCurveMenuItemFactory> menuItemFactory;
 
 @property (nonatomic, retain) id<QuadCurveAnimation> selectedAnimation;

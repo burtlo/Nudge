@@ -8,6 +8,12 @@
 
 #import "QuadCurveMenu.h"
 
+@interface QuadCurveDefaultMainMenuItemFactory : NSObject <QuadCurveMenuItemFactory>
+
+- (id)initWithImage:(UIImage *)image andHighlightImage:(UIImage *)highlightImage;
+
+@end
+
 @interface QuadCurveDefaultMenuItemFactory : NSObject <QuadCurveMenuItemFactory>
 
 @end

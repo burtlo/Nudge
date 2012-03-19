@@ -88,6 +88,7 @@ static CGPoint RotateCGPointAroundCenter(CGPoint point, CGPoint center, float an
 
 @synthesize nearRadius, endRadius, farRadius, timeOffset, rotateAngle, menuWholeAngle, startPoint;
 
+@synthesize mainMenuItemFactory = mainMenuItemFactory_;
 @synthesize menuItemFactory;
 
 @synthesize selectedAnimation;
@@ -117,6 +118,8 @@ static CGPoint RotateCGPointAroundCenter(CGPoint point, CGPoint center, float an
         self.rotateAngle = kQuadCurveMenuDefaultRotateAngle;
 		self.menuWholeAngle = kQuadCurveMenuDefaultMenuWholeAngle;
         self.startPoint = CGPointMake(kQuadCurveMenuDefaultStartPointX, kQuadCurveMenuDefaultStartPointY);
+
+        self.mainMenuItemFactory = [[[QuadCurveDefaultMainMenuItemFactory alloc] init] autorelease];
         
         self.menuItemFactory = [[[QuadCurveDefaultMenuItemFactory alloc] init] autorelease];
         
@@ -129,14 +132,6 @@ static CGPoint RotateCGPointAroundCenter(CGPoint point, CGPoint center, float an
         self.addItemAnimation = [[[QuadCurveItemMoveAnimation alloc] init] autorelease];
         
         self.dataSource = dataSource;
-        
-        mainMenuButton = [[QuadCurveMenuItem alloc] initWithImage:[UIImage imageNamed:@"icon-plus.png"] 
-                                                 highlightedImage:[UIImage imageNamed:@"icon-plus-highlighted.png"]];
-        mainMenuButton.delegate = self;
-        
-        mainMenuButton.center = CGPointMake(kQuadCurveMenuDefaultStartPointX, kQuadCurveMenuDefaultStartPointY);
-        
-        [self addSubview:mainMenuButton];
 
     }
     return self;
@@ -145,6 +140,8 @@ static CGPoint RotateCGPointAroundCenter(CGPoint point, CGPoint center, float an
 #pragma mark - Deallocation
 
 - (void)dealloc {
+    [mainMenuItemFactory_ release];
+    [menuItemFactory release];
     [selectedAnimation release];
     [unselectedanimation release];
     [expandItemAnimation release];
@@ -153,6 +150,29 @@ static CGPoint RotateCGPointAroundCenter(CGPoint point, CGPoint center, float an
     [mainMenuButton release];
     [super dealloc];
 }
+
+#pragma mark - Main Menu Item
+
+- (void)setMainMenuItemFactory:(id<QuadCurveMenuItemFactory>)mainMenuItemFactory {
+    
+    [self willChangeValueForKey:@"mainMenuItemFactory"];
+    
+    [mainMenuItemFactory_ release];
+    [mainMenuButton removeFromSuperview];
+    
+    mainMenuItemFactory_ = [mainMenuItemFactory retain];
+    
+    mainMenuButton = [[self mainMenuItemFactory] createMenuItemWithDataObject:nil];
+    mainMenuButton.delegate = self;
+    
+    mainMenuButton.center = CGPointMake(kQuadCurveMenuDefaultStartPointX, kQuadCurveMenuDefaultStartPointY);
+    
+    [self addSubview:mainMenuButton];
+    [self setNeedsDisplay];
+    [self didChangeValueForKey:@"mainMenuItemFactory"];
+    
+}
+
 
 #pragma mark - Event Delegate
 
@@ -222,29 +242,6 @@ static CGPoint RotateCGPointAroundCenter(CGPoint point, CGPoint center, float an
 
 - (BOOL)inProgress {
     return mainMenuButton.inProgress;
-}
-
-#pragma mark - images
-
-- (void)setContentImage:(UIImage *)contentImage {
-    [self willChangeValueForKey:@"contentImage"];
-	mainMenuButton.image = contentImage;
-    [self didChangeValueForKey:@"contentImage"];
-}
-
-- (UIImage*)contentImage {
-    return mainMenuButton.image;
-}
-
-
-- (void)setHighlightedContentImage:(UIImage *)highlightedContentImage {
-    [self willChangeValueForKey:@"highlightedContentImage"];
-	mainMenuButton.highlightedImage = highlightedContentImage;
-    [self didChangeValueForKey:@"highlightedContentImage"];
-}
-
-- (UIImage*)highlightedContentImage {
-    return mainMenuButton.highlightedImage;
 }
 
 #pragma mark - QuadCurveMenuItemEventDelegate Adherence

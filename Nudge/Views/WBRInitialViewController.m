@@ -14,6 +14,7 @@
 
 #import "QuadCurveMenu.h"
 #import "QuadCurveMenuItem.h"
+#import "QuadCurveDefaultMenuItemFactory.h"
 
 @interface WBRInitialViewController ()
 
@@ -48,9 +49,11 @@
     facebookUsersMenu = [[QuadCurveMenu alloc] initWithFrame:CGRectMake(0.0, 0.0, 320.0, 400.0) 
                                                   dataSource:facebookUsers];
 
+    UIImage *facebookImage = [UIImage imageNamed:@"facebook.png"];
+    
+    [facebookUsersMenu setMainMenuItemFactory:[[QuadCurveDefaultMainMenuItemFactory alloc] initWithImage:facebookImage andHighlightImage:facebookImage]];
+    
     [facebookUsersMenu setMenuItemFactory:[[WBRFacebookMenuItemFactory alloc] init]];
-    [facebookUsersMenu setContentImage:[UIImage imageNamed:@"facebook.png"]];
-    [facebookUsersMenu setHighlightedContentImage:[UIImage imageNamed:@"facebook.png"]];
     [facebookUsersMenu setDelegate:self];
     
     [[self view] addSubview:facebookUsersMenu];
