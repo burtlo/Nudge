@@ -41,6 +41,8 @@ static CGPoint RotateCGPointAroundCenter(CGPoint point, CGPoint center, float an
     QuadCurveMenuItem *mainMenuButton;
     
     id<QuadCurveMenuDelegate> _delegate;
+    
+    NSMutableDictionary *dataObjectToMenuItemView;
     id<QuadCurveDataSourceDelegate> dataSource_;
     
     BOOL delegateHasDidTapMainMenu;
@@ -156,6 +158,20 @@ static CGPoint RotateCGPointAroundCenter(CGPoint point, CGPoint center, float an
     delegateHasDidClose = [delegate respondsToSelector:@selector(quadCurveMenuDidClose:)];
     
     [self didChangeValueForKey:@"delegate"];
+}
+
+#pragma mark - Data Source Delegate
+
+- (void)setDataSource:(id<QuadCurveDataSourceDelegate>)dataSource {
+    
+    [self willChangeValueForKey:@"dataSource"];
+    
+    [dataObjectToMenuItemView release];
+    dataObjectToMenuItemView = [[NSMutableDictionary dictionary] retain];
+    
+    dataSource_ = dataSource;
+    
+    [self didChangeValueForKey:@"dataSource"];
 }
 
 #pragma mark 
@@ -355,10 +371,12 @@ static CGPoint RotateCGPointAroundCenter(CGPoint point, CGPoint center, float an
 
 - (void)acceptMenuItem:(QuadCurveMenuItem *)item {
 
-    int tag = kQuadCurveMenuItemStartingTag + [[self dataSource] numberOfMenuItems];
+    [[self dataSource] insertDataObject:[item dataObject] atIndex:3];
 
-    [[self dataSource] addDataItem:[item dataObject]];
-    [item setTag:tag];
+    [dataObjectToMenuItemView setObject:item forKey:item.dataObject];
+    
+    // find the index closest to the current item's center point;
+    
     [self insertSubview:item belowSubview:mainMenuButton];
     
     [self updateMenu];
@@ -396,13 +414,11 @@ static CGPoint RotateCGPointAroundCenter(CGPoint point, CGPoint center, float an
 
 	int count = [[self dataSource] numberOfMenuItems];
     
+    
     for (int i = 0; i < count; i ++) {
         
-        
-        QuadCurveMenuItem *item = (QuadCurveMenuItem *)[self viewWithTag:(kQuadCurveMenuItemStartingTag + i)];
-
-        NSLog(@"Updating item [%@] with tag: %d",[item class],(kQuadCurveMenuItemStartingTag + i));
-
+        // given the current 
+        QuadCurveMenuItem *item = [self menuItemForDataObject:[[self dataSource] dataObjectAtIndex:i]];
         
         if (item == nil) { 
             item = [[self dataSource] menuItemAtIndex:i];
@@ -451,19 +467,28 @@ static CGPoint RotateCGPointAroundCenter(CGPoint point, CGPoint center, float an
     }
 }
 
+- (QuadCurveMenuItem *)menuItemForDataObject:(id)dataObject {
+    return [dataObjectToMenuItemView objectForKey:dataObject];
+//    int menuItemTag = [[dataObjectsToViewTags objectForKey:dataObject] intValue];
+//    return (menuItemTag ? (QuadCurveMenuItem *)[self viewWithTag:menuItemTag] : nil);
+}
+
 - (void)addMenuItemsToView {
     
 	int count = [[self dataSource] numberOfMenuItems];
     
     for (int i = 0; i < count; i ++) {
         
-        QuadCurveMenuItem *item = (QuadCurveMenuItem *)[self viewWithTag:(kQuadCurveMenuItemStartingTag + i)];
+        QuadCurveMenuItem *item = [self menuItemForDataObject:[[self dataSource] dataObjectAtIndex:i]];
         
         if (item == nil) { 
             item = [[self dataSource] menuItemAtIndex:i];
         }
         
         item.tag = kQuadCurveMenuItemStartingTag + i;
+        
+        [dataObjectToMenuItemView setObject:item forKey:item.dataObject];
+        
         item.startPoint = startPoint;
         CGPoint endPoint = CGPointMake(startPoint.x + endRadius * sinf(i * menuWholeAngle / count), startPoint.y - endRadius * cosf(i * menuWholeAngle / count));
         item.endPoint = RotateCGPointAroundCenter(endPoint, startPoint, rotateAngle);

@@ -14,6 +14,7 @@
 
 @implementation WBRFacebookUser
 
+@synthesize dataDictionary;
 @synthesize identifier;
 @synthesize name;
 
@@ -21,6 +22,9 @@
     self = [super init];
     
     if (self) {
+        
+        [self setDataDictionary:dictionary];
+        
         [self setValuesForKeysWithDictionary:dictionary];
     }
     return self;
@@ -37,6 +41,27 @@
     NSString *profileImageURLString = [NSString stringWithFormat:@"https://graph.facebook.com/%@/picture",[self identifier]];
     
     return [NSURL URLWithString:profileImageURLString];
+}
+
+#pragma mark - NSCopying Adherence
+
+- (BOOL)isEqual:(id)object {
+    
+    if ([object isKindOfClass:[self class]]) {
+        return [[self identifier] isEqualToString:[object identifier]];
+    }
+    
+    return NO;
+}
+
+- (NSUInteger)hash {
+    return [[self identifier] hash];
+}
+
+- (id)copyWithZone:(NSZone *)zone {
+    
+    return [[WBRFacebookUser allocWithZone:zone] initWithDictionary:[self dataDictionary]];
+    
 }
 
 @end

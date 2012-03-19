@@ -8,12 +8,13 @@
 
 #import <Foundation/Foundation.h>
 
-@interface WBRFacebookUser : NSObject
+@interface WBRFacebookUser : NSObject <NSCopying>
 
 - (id)initWithDictionary:(NSDictionary *)dictionary;
 
 - (NSURL *)profileImageURL;
 
+@property (nonatomic,strong) NSDictionary *dataDictionary;
 @property (nonatomic,strong) NSString *identifier;
 @property (nonatomic,strong) NSString *name;
 
