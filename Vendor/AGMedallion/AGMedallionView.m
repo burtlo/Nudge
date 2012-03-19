@@ -24,7 +24,6 @@
 #define DEGREES_2_RADIANS(x) (0.0174532925 * (x))
 
 @interface AGMedallionView (){
-    // Private
     CGGradientRef alphaGradient;
 }
 
@@ -43,8 +42,10 @@
 @synthesize progressColor;
 @synthesize progress;
 
-- (void)setImage:(UIImage *)aImage
-{
+#pragma mark - Property Setters
+
+- (void)setImage:(UIImage *)aImage {
+    
     if (image != aImage) {
         [image release];
         image = [aImage retain];
@@ -53,8 +54,7 @@
     }
 }
 
-- (void)setBorderColor:(UIColor *)aBorderColor
-{
+- (void)setBorderColor:(UIColor *)aBorderColor {
     if (borderColor != aBorderColor) {
         [borderColor release];
         borderColor = [aBorderColor retain];
@@ -63,8 +63,7 @@
     }
 }
 
-- (void)setBorderWidth:(CGFloat)aBorderWidth
-{
+- (void)setBorderWidth:(CGFloat)aBorderWidth {
     if (borderWidth != aBorderWidth) {
         borderWidth = aBorderWidth;
         
@@ -72,8 +71,7 @@
     }
 }
 
-- (void)setShadowColor:(UIColor *)aShadowColor
-{
+- (void)setShadowColor:(UIColor *)aShadowColor {
     if (shadowColor != aShadowColor) {
         [shadowColor release];
         shadowColor = [aShadowColor retain];
@@ -82,8 +80,7 @@
     }
 }
 
-- (void)setShadowOffset:(CGSize)aShadowOffset
-{
+- (void)setShadowOffset:(CGSize)aShadowOffset {
     if (!CGSizeEqualToSize(shadowOffset, aShadowOffset)) {
         shadowOffset.width = aShadowOffset.width;
         shadowOffset.height = aShadowOffset.height;
@@ -92,8 +89,7 @@
     }
 }
 
-- (void)setShadowBlur:(CGFloat)aShadowBlur
-{
+- (void)setShadowBlur:(CGFloat)aShadowBlur {
     if (shadowBlur != aShadowBlur) {
         shadowBlur = aShadowBlur;
         
@@ -112,8 +108,7 @@
 
 #pragma mark - Object Lifecycle
 
-- (void)dealloc
-{
+- (void)dealloc {
     [image release];
     [borderColor release];
     [shadowColor release];
@@ -124,8 +119,7 @@
     [super dealloc];
 }
 
-- (void)setup
-{
+- (void)setup {
     alphaGradient = NULL;
     
     self.borderColor = [UIColor whiteColor];
@@ -144,8 +138,7 @@
     
 }
 
-- (id)initWithCoder:(NSCoder *)aDecoder
-{
+- (id)initWithCoder:(NSCoder *)aDecoder {
     self = [super initWithCoder:aDecoder];
     if (self)
     {
@@ -155,8 +148,7 @@
     return self;
 }
 
-- (id)initWithFrame:(CGRect)frame
-{
+- (id)initWithFrame:(CGRect)frame {
     self = [super initWithFrame:frame];
     if (self)
     {
