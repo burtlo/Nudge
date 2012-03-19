@@ -44,6 +44,10 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
 
+    UIColor *backgroundColor = [UIColor colorWithPatternImage:[UIImage imageNamed:@"classy_fabric"]];
+    
+    [[self view] setBackgroundColor:backgroundColor];
+    
     facebookUsers = [[WBRFacebookUsers alloc] init];
     
     facebookUsersMenu = [[QuadCurveMenu alloc] initWithFrame:CGRectMake(0.0, 0.0, 320.0, 400.0) 
