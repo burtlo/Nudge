@@ -8,6 +8,7 @@
 
 #import "PinballMenu.h"
 #import <QuartzCore/QuartzCore.h>
+#import "QuadCurveMenu.h"
 
 @implementation PinballMenu
 
@@ -75,6 +76,41 @@
 
 - (void)quadCurveMenuItemLongPressed:(QuadCurveMenuItem *)item {
     NSLog(@"pressed");
+}
+
+- (void)quadCurveMenuItemDragged:(QuadCurveMenuItem *)item withPanGesture:(UIPanGestureRecognizer *)gesture {
+    
+    [item setUserInteractionEnabled:NO];
+    //NSLog(@"dragging to: %f,%f",[gesture locationInView:self].x,[gesture locationInView:self].y);
+
+    UIWindow *window = [[UIApplication sharedApplication] keyWindow];
+    [window addSubview:item];
+    
+    CGPoint gesturePoint = [gesture locationInView:window];
+    
+    item.center = gesturePoint;
+    
+    if (gesture.state == UIGestureRecognizerStateEnded) {
+        
+        
+        UIView *hitView = [window hitTest:gesturePoint withEvent:nil];
+        
+        [item setUserInteractionEnabled:YES];
+        NSLog(@"Hit View: %@",hitView);
+        
+        if ([hitView conformsToProtocol:@protocol(QuadCurveMenuItemReceiver)]) {
+            
+            id<QuadCurveMenuItemReceiver> receiver = (id<QuadCurveMenuItemReceiver>)hitView;
+            
+            if ([receiver shouldAcceptMenuItem:item]) {
+                NSLog(@"You can leave me here on a %@",receiver);
+                [receiver acceptMenuItem:item];
+            }
+            
+        }
+
+    }
+    
 }
 
 @end

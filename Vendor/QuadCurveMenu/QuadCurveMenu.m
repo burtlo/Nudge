@@ -339,6 +339,16 @@ static CGPoint RotateCGPointAroundCenter(CGPoint point, CGPoint center, float an
     [self didChangeValueForKey:@"expanding"];
 }
 
+#pragma mark - QuadCurveMenuItemReciver Adherence
+
+- (BOOL)shouldAcceptMenuItem:(QuadCurveMenuItem *)item {
+    return YES;
+}
+
+- (void)acceptMenuItem:(QuadCurveMenuItem *)item {
+    NSLog(@"Accepting Menu Item");
+}
+
 #pragma mark - Animate MenuItems Expanded
 
 - (void)performExpandMenu {

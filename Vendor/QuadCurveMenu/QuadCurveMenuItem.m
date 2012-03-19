@@ -12,7 +12,7 @@
    
     BOOL delegateHasLongPressed;
     BOOL delegateHasTapped;
-    
+    BOOL delegateHasDragged;
 }
 
 
@@ -62,7 +62,14 @@
         UITapGestureRecognizer *singleTapGesture = [[[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(singleTapOnMenuItem:)] autorelease];
         
         [self addGestureRecognizer:singleTapGesture];
+        
+        UIPanGestureRecognizer *panGesture = [[[UIPanGestureRecognizer alloc] initWithTarget:self action:@selector(dragOnMenuItem:)] autorelease];
+        
+        [self addGestureRecognizer:panGesture];
+        
         [self setUserInteractionEnabled:YES];
+        
+        
     }
     return self;
 }
@@ -84,7 +91,7 @@
     
     delegateHasLongPressed = [delegate respondsToSelector:@selector(quadCurveMenuItemLongPressed:)];
     delegateHasTapped = [delegate respondsToSelector:@selector(quadCurveMenuItemTapped:)];
-    
+    delegateHasDragged = [delegate respondsToSelector:@selector(quadCurveMenuItemDragged:withPanGesture:)];
     [self didChangeValueForKey:@"delegate"];
     
 }
@@ -103,6 +110,14 @@
     
     if (delegateHasTapped) {
         [delegate_ quadCurveMenuItemTapped:self];
+    }
+    
+}
+
+- (void)dragOnMenuItem:(UIPanGestureRecognizer  *)sender {
+    
+    if (delegateHasDragged) {
+        [delegate_ quadCurveMenuItemDragged:self withPanGesture:sender];
     }
     
 }

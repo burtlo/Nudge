@@ -18,6 +18,7 @@
 @property (nonatomic, retain) UIImage *highlightedImage;
 
 @property (nonatomic, assign) BOOL inProgress;
+//@property (nonatomic, assign) BOOL ignoreTouches;
 
 @property (nonatomic) CGPoint startPoint;
 @property (nonatomic) CGPoint endPoint;
@@ -39,5 +40,6 @@
 
 - (void)quadCurveMenuItemLongPressed:(QuadCurveMenuItem *)item;
 - (void)quadCurveMenuItemTapped:(QuadCurveMenuItem *)item;
+- (void)quadCurveMenuItemDragged:(QuadCurveMenuItem *)item withPanGesture:(UIPanGestureRecognizer *)gesture;
 
 @end

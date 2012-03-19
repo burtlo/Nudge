@@ -10,11 +10,20 @@
 #import "QuadCurveMenuItem.h"
 #import "QuadCurveAnimation.h"
 
+@protocol QuadCurveMenuItemReceiver <NSObject>
+
+- (BOOL)shouldAcceptMenuItem:(QuadCurveMenuItem *)item;
+- (void)acceptMenuItem:(QuadCurveMenuItem *)item;
+
+
+@end
+
+
 @protocol QuadCurveMenuDelegate;
 @protocol QuadCurveDataSourceDelegate;
 
 
-@interface QuadCurveMenu : UIView <QuadCurveMenuItemEventDelegate>
+@interface QuadCurveMenu : UIView <QuadCurveMenuItemEventDelegate,QuadCurveMenuItemReceiver>
 
 @property (nonatomic, getter = isExpanding) BOOL expanding;
 @property (nonatomic, assign) BOOL inProgress;
