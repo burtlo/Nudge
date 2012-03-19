@@ -13,12 +13,13 @@
 
 @interface QuadCurveMenuItem : UIControl
 
+@property (nonatomic, retain) id dataObject;
+
 @property (nonatomic, retain, readonly) AGMedallionView *contentImageView;
 @property (nonatomic, retain) UIImage *image;
 @property (nonatomic, retain) UIImage *highlightedImage;
 
 @property (nonatomic, assign) BOOL inProgress;
-//@property (nonatomic, assign) BOOL ignoreTouches;
 
 @property (nonatomic) CGPoint startPoint;
 @property (nonatomic) CGPoint endPoint;

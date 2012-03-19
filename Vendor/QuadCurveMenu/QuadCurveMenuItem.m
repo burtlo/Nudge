@@ -25,6 +25,8 @@
 
 @implementation QuadCurveMenuItem
 
+@synthesize dataObject;
+
 @synthesize contentImageView = contentImageView_;
 
 @synthesize startPoint = _startPoint;

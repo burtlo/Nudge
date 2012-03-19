@@ -14,6 +14,7 @@
 
 @interface WBRFacebookUsers () {
     NSDate *lastUpdated;
+    NSMutableArray *facebookUsers;
 }
 
 @end
@@ -31,7 +32,8 @@
     if (self) {
         
         lastUpdated = [NSDate dateWithTimeIntervalSince1970:0];
-        facebookUsers = [NSMutableDictionary dictionary];
+        //facebookUsers = [NSMutableDictionary dictionary];
+        facebookUsers = [NSMutableArray array];
         
         [self updateWithDictionary:dataDictionary];
         
@@ -43,16 +45,24 @@
 
 - (void)updateWithDictionary:(NSDictionary *)dataDictionary {
     
+    int userCount = 0;
+    
     for (NSDictionary *userData in [dataDictionary objectForKey:@"data"]) {
+        
+        userCount = userCount + 1;
+        if (userCount > 10) { return; }
         
         lastUpdated = [NSDate date];
         
-        NSString *userIdentifier = [userData objectForKey:@"id"];
+//        NSString *userIdentifier = [userData objectForKey:@"id"];
         
-        if ([facebookUsers objectForKey:userIdentifier] == nil) {
-            WBRFacebookUser *user = [[WBRFacebookUser alloc] initWithDictionary:userData];
-            [facebookUsers setObject:user forKey:[user identifier]];
-        }
+        WBRFacebookUser *user = [[WBRFacebookUser alloc] initWithDictionary:userData];
+        [facebookUsers addObject:user]; 
+//        
+//        if ([facebookUsers objectForKey:userIdentifier] == nil) {
+//            
+//            [facebookUsers setObject:user forKey:[user identifier]];
+//        }
         
     }
     
@@ -71,17 +81,21 @@
 #pragma mark - QuadCurveDataSourceDelegate Adherence
 
 - (int)numberOfMenuItems {
-    int countOfItems = [[facebookUsers allValues] count];
-    
-    if (countOfItems > 10) {
-        countOfItems = 10;
-    }
-    
-    return countOfItems;
+    return [facebookUsers count];
+//    return [[facebookUsers allValues] count];
 }
 
 - (id)menuItemAtIndex:(NSInteger)itemIndex {
-    return [[WBRFacebookUserMenuItem alloc] initWithFacebookUser:[[facebookUsers allValues] objectAtIndex:itemIndex]];
+    return [[WBRFacebookUserMenuItem alloc] initWithFacebookUser:[facebookUsers objectAtIndex:itemIndex]];
+//    return [[WBRFacebookUserMenuItem alloc] initWithFacebookUser:[[facebookUsers allValues] objectAtIndex:itemIndex]];
+}
+
+- (void)addDataItem:(id)item {
+    
+    WBRFacebookUser *user = (WBRFacebookUser *)item;
+//    [facebookUsers setObject:user forKey:[user identifier]];
+    [facebookUsers addObject:user];
+    
 }
 
 #pragma mark - PinballDataSource Adherence

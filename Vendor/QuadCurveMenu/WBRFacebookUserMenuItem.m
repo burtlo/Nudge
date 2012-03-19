@@ -22,6 +22,8 @@
                                  
     if (self) {
         
+        [self setDataObject:user];
+        
         NSURLRequest *request = [NSURLRequest requestWithURL:[user profileImageURL]];
         [NSURLConnection connectionWithRequest:request delegate:self];
         

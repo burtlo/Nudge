@@ -346,7 +346,7 @@ static CGPoint RotateCGPointAroundCenter(CGPoint point, CGPoint center, float an
 }
 
 - (void)acceptMenuItem:(QuadCurveMenuItem *)item {
-    NSLog(@"Accepting Menu Item");
+    [[self dataSource] addDataItem:[item dataObject]];
 }
 
 #pragma mark - Animate MenuItems Expanded
@@ -380,9 +380,9 @@ static CGPoint RotateCGPointAroundCenter(CGPoint point, CGPoint center, float an
         
         QuadCurveMenuItem *item = (QuadCurveMenuItem *)[self viewWithTag:(kQuadCurveMenuItemStartingTag + i)];
         
-        if (item) { continue; }
-        
-        item = [[self dataSource] menuItemAtIndex:i];
+        if (item == nil) { 
+            item = [[self dataSource] menuItemAtIndex:i];
+        }
         
         item.tag = kQuadCurveMenuItemStartingTag + i;
         item.startPoint = startPoint;

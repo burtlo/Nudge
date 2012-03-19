@@ -80,5 +80,6 @@
 
 - (int)numberOfMenuItems;
 - (id)menuItemAtIndex:(NSInteger)itemIndex;
+- (void)addDataItem:(id)item;
 
 @end
