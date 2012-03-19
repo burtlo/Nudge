@@ -166,6 +166,14 @@ static CGPoint RotateCGPointAroundCenter(CGPoint point, CGPoint center, float an
     }
 }
 
+- (void)updateMenu {
+    if ([self isExpanding]) {
+        [self addMenuItemsToExpandedView];
+    } else {
+        [self addMenuItemsToView];
+    }
+}
+
 - (void)closeMenu {
     if ([self isExpanding]) {
         [self setExpanding:NO];
@@ -346,7 +354,19 @@ static CGPoint RotateCGPointAroundCenter(CGPoint point, CGPoint center, float an
 }
 
 - (void)acceptMenuItem:(QuadCurveMenuItem *)item {
+
+    int tag = kQuadCurveMenuItemStartingTag + [[self dataSource] numberOfMenuItems];
+
     [[self dataSource] addDataItem:[item dataObject]];
+    [item setTag:tag];
+    [self insertSubview:item belowSubview:mainMenuButton];
+    
+    [self updateMenu];
+}
+
+- (void)menuItem:(QuadCurveMenuItem *)item position:(CGPoint)point {
+    // generate a faux item in the collection at this location
+    NSLog(@"menu item is appearing over %f,%f",point.x,point.y);
 }
 
 #pragma mark - Animate MenuItems Expanded
@@ -370,6 +390,65 @@ static CGPoint RotateCGPointAroundCenter(CGPoint point, CGPoint center, float an
         [[self delegate] quadCurveMenuDidExpand:self];
     }
     
+}
+
+- (void)addMenuItemsToExpandedView {
+
+	int count = [[self dataSource] numberOfMenuItems];
+    
+    for (int i = 0; i < count; i ++) {
+        
+        
+        QuadCurveMenuItem *item = (QuadCurveMenuItem *)[self viewWithTag:(kQuadCurveMenuItemStartingTag + i)];
+
+        NSLog(@"Updating item [%@] with tag: %d",[item class],(kQuadCurveMenuItemStartingTag + i));
+
+        
+        if (item == nil) { 
+            item = [[self dataSource] menuItemAtIndex:i];
+        }
+        
+        item.delegate = self;
+        item.tag = kQuadCurveMenuItemStartingTag + i;
+        
+        item.startPoint = startPoint;
+        
+        CGPoint endPoint = CGPointMake(startPoint.x + endRadius * sinf(i * menuWholeAngle / count), startPoint.y - endRadius * cosf(i * menuWholeAngle / count));
+        item.endPoint = RotateCGPointAroundCenter(endPoint, startPoint, rotateAngle);
+        CGPoint nearPoint = CGPointMake(startPoint.x + nearRadius * sinf(i * menuWholeAngle / count), startPoint.y - nearRadius * cosf(i * menuWholeAngle / count));
+        item.nearPoint = RotateCGPointAroundCenter(nearPoint, startPoint, rotateAngle);
+        CGPoint farPoint = CGPointMake(startPoint.x + farRadius * sinf(i * menuWholeAngle / count), startPoint.y - farRadius * cosf(i * menuWholeAngle / count));
+        item.farPoint = RotateCGPointAroundCenter(farPoint, startPoint, rotateAngle);
+        
+        
+        
+        CAKeyframeAnimation *rotateAnimation = [CAKeyframeAnimation animationWithKeyPath:@"transform.rotation.z"];
+        rotateAnimation.values = [NSArray arrayWithObjects:[NSNumber numberWithFloat:0.0f],[NSNumber numberWithFloat:M_PI * 2],[NSNumber numberWithFloat:0.0f], nil];
+        rotateAnimation.duration = 0.5f;
+        rotateAnimation.keyTimes = [NSArray arrayWithObjects:
+                                    [NSNumber numberWithFloat:.0], 
+                                    [NSNumber numberWithFloat:.4],
+                                    [NSNumber numberWithFloat:.5], nil]; 
+        
+        CAKeyframeAnimation *positionAnimation = [CAKeyframeAnimation animationWithKeyPath:@"position"];
+        positionAnimation.duration = 0.5f;
+        CGMutablePathRef path = CGPathCreateMutable();
+        CGPathMoveToPoint(path, NULL, item.center.x, item.center.y);
+        CGPathAddLineToPoint(path, NULL, endPoint.x, endPoint.y);
+        positionAnimation.path = path;
+        CGPathRelease(path);
+        
+        CAAnimationGroup *animationgroup = [CAAnimationGroup animation];
+        animationgroup.animations = [NSArray arrayWithObjects:positionAnimation, rotateAnimation, nil];
+        animationgroup.duration = 0.5f;
+        animationgroup.fillMode = kCAFillModeForwards;
+        animationgroup.timingFunction = [CAMediaTimingFunction functionWithName:kCAMediaTimingFunctionEaseIn];
+            
+        [item.layer addAnimation:animationgroup forKey:@"updatePosition"];
+        item.center = item.endPoint;
+        
+		[self insertSubview:item belowSubview:mainMenuButton];
+    }
 }
 
 - (void)addMenuItemsToView {

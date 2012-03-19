@@ -90,10 +90,20 @@
     
     item.center = gesturePoint;
     
+    UIView *hitView = [window hitTest:gesturePoint withEvent:nil];
+    
+    if ([hitView conformsToProtocol:@protocol(QuadCurveMenuItemReceiver)]) {
+        
+        id<QuadCurveMenuItemReceiver> receiver = (id<QuadCurveMenuItemReceiver>)hitView;
+        
+        [receiver menuItem:item position:[gesture locationInView:hitView]];
+        
+    }
+    
     if (gesture.state == UIGestureRecognizerStateEnded) {
         
         
-        UIView *hitView = [window hitTest:gesturePoint withEvent:nil];
+        
         
         [item setUserInteractionEnabled:YES];
         NSLog(@"Hit View: %@",hitView);
@@ -103,7 +113,12 @@
             id<QuadCurveMenuItemReceiver> receiver = (id<QuadCurveMenuItemReceiver>)hitView;
             
             if ([receiver shouldAcceptMenuItem:item]) {
-                NSLog(@"You can leave me here on a %@",receiver);
+                
+                CGPoint pointInView = [gesture locationInView:hitView];
+                
+                NSLog(@"You can leave me here on a %@ at (%f,%f)",receiver,pointInView.x,pointInView.y);
+                
+                item.center = [gesture locationInView:hitView];
                 [receiver acceptMenuItem:item];
             }
             

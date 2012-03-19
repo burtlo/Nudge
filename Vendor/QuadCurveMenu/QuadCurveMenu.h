@@ -14,7 +14,7 @@
 
 - (BOOL)shouldAcceptMenuItem:(QuadCurveMenuItem *)item;
 - (void)acceptMenuItem:(QuadCurveMenuItem *)item;
-
+- (void)menuItem:(QuadCurveMenuItem *)item position:(CGPoint)point;
 
 @end
 
@@ -51,6 +51,8 @@
 
 - (void)expandMenu;
 - (void)closeMenu;
+- (void)updateMenu;
+
 
 @end
 
