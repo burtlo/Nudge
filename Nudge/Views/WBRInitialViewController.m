@@ -43,7 +43,7 @@
 
     facebookUsers = [[WBRFacebookUsers alloc] init];
     
-    facebookUsersMenu = [[QuadCurveMenu alloc] initWithFrame:CGRectMake(0.0, 0.0, 320.0, 200.0) 
+    facebookUsersMenu = [[QuadCurveMenu alloc] initWithFrame:CGRectMake(0.0, 0.0, 320.0, 400.0) 
                                                   dataSource:facebookUsers];
 
     [facebookUsersMenu setContentImage:[UIImage imageNamed:@"facebook.png"]];

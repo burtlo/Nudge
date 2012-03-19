@@ -118,7 +118,7 @@ static CGPoint RotateCGPointAroundCenter(CGPoint point, CGPoint center, float an
         mainMenuButton.center = CGPointMake(kQuadCurveMenuDefaultStartPointX, kQuadCurveMenuDefaultStartPointY);
         
         [self addSubview:mainMenuButton];
-        
+
     }
     return self;
 }
@@ -185,38 +185,24 @@ static CGPoint RotateCGPointAroundCenter(CGPoint point, CGPoint center, float an
 #pragma mark - images
 
 - (void)setContentImage:(UIImage *)contentImage {
-	mainMenuButton.contentImageView.image = contentImage;
+    [self willChangeValueForKey:@"contentImage"];
+	mainMenuButton.image = contentImage;
+    [self didChangeValueForKey:@"contentImage"];
 }
 
 - (UIImage*)contentImage {
-	return mainMenuButton.contentImageView.image;
+    return mainMenuButton.image;
 }
 
 
 - (void)setHighlightedContentImage:(UIImage *)highlightedContentImage {
-	mainMenuButton.contentImageView.highlightedImage = highlightedContentImage;
+    [self willChangeValueForKey:@"highlightedContentImage"];
+	mainMenuButton.highlightedImage = highlightedContentImage;
+    [self didChangeValueForKey:@"highlightedContentImage"];
 }
 
 - (UIImage*)highlightedContentImage {
-    return mainMenuButton.contentImageView.highlightedImage;
-}
-
-#pragma mark - UIView's methods
-
-- (BOOL)pointInside:(CGPoint)point withEvent:(UIEvent *)event {
-    // if the menu state is expanding, everywhere can be touch
-    // otherwise, only the add button are can be touch
-    if (YES == _expanding) {
-        return YES;
-    } else {
-        CGRect buttonFrame = CGRectOffset(mainMenuButton.contentImageView.frame, mainMenuButton.center.x, mainMenuButton.center.y);
-        BOOL touchResult = CGRectContainsPoint(buttonFrame, point);
-        return touchResult;
-    }
-}
-
-- (void)touchesBegan:(NSSet *)touches withEvent:(UIEvent *)event {
-    self.expanding = !self.isExpanding;
+    return mainMenuButton.highlightedImage;
 }
 
 #pragma mark - QuadCurveMenuItemEventDelegate Adherence

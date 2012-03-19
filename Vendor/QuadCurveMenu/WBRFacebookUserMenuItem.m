@@ -25,6 +25,7 @@
         NSURLRequest *request = [NSURLRequest requestWithURL:[user profileImageURL]];
         [NSURLConnection connectionWithRequest:request delegate:self];
         
+        [self setInProgress:YES];
     }
     return self;
 }
@@ -40,9 +41,14 @@
 }
 
 - (void)connectionDidFinishLoading:(NSURLConnection *)connection {
-    [[self contentImageView] setImage:[UIImage imageWithData:imageData]];
-    [[self contentImageView] setHighlightedImage:[UIImage imageWithData:imageData]];
+    
+    UIImage *userImage = [UIImage imageWithData:imageData];
+    
+    [self setImage:userImage];
+    [self setHighlightedImage:userImage];
+    
     imageData = nil;
+    [self setInProgress:NO];
 }
 
 @end

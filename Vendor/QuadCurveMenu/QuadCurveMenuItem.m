@@ -15,6 +15,7 @@
     
 }
 
+
 @property (nonatomic,retain) NSTimer *progressTimer;
 
 - (void)longPressOnMenuItem:(UIGestureRecognizer *)sender;
@@ -30,11 +31,14 @@
 @synthesize endPoint = _endPoint;
 @synthesize nearPoint = _nearPoint;
 @synthesize farPoint = _farPoint;
-@synthesize delegate  = delegate_;
+
+@dynamic image;
+@dynamic highlightedImage;
 
 @synthesize progressTimer = progressTimer_;
 @synthesize inProgress = inProgress_;
 
+@synthesize delegate  = delegate_;
 
 #pragma mark - Initialization
 
@@ -58,7 +62,7 @@
         UITapGestureRecognizer *singleTapGesture = [[[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(singleTapOnMenuItem:)] autorelease];
         
         [self addGestureRecognizer:singleTapGesture];
-
+        [self setUserInteractionEnabled:YES];
     }
     return self;
 }
@@ -152,26 +156,38 @@
 - (void)layoutSubviews {
     [super layoutSubviews];
     
-    self.bounds = CGRectMake(0, 0, self.image.size.width, self.image.size.height);
+    self.frame = CGRectMake(self.center.x - self.image.size.width/2,self.center.y - self.image.size.height/2,self.image.size.width, self.image.size.height);
     
-    float width = contentImageView_.image.size.width;
-    float height = contentImageView_.image.size.height;
-    contentImageView_.frame = CGRectMake(self.bounds.size.width/2 - width/2, self.bounds.size.height/2 - height/2, width, height);
-}
+    float width = self.image.size.width;
+    float height = self.image.size.height;
 
-- (BOOL)pointInside:(CGPoint)point withEvent:(UIEvent *)event {
-    
-    CGRect buttonFrame = self.contentImageView.frame;
-    BOOL touchResult = CGRectContainsPoint(buttonFrame, point);
-    return touchResult;
-}
-
-- (void)touchesBegan:(NSSet *)touches withEvent:(UIEvent *)event {
-    self.highlighted = YES;
+    contentImageView_.frame = CGRectMake(0.0,0.0, width, height);
 }
 
 - (void)touchesCancelled:(NSSet *)touches withEvent:(UIEvent *)event {
     self.highlighted = NO;
+}
+
+#pragma mark - Image and HighlightImage
+
+- (void)setImage:(UIImage *)image {
+    [self willChangeValueForKey:@"image"];
+    contentImageView_.image = image;
+    [self didChangeValueForKey:@"image"];
+}
+
+- (UIImage *)image {
+    return contentImageView_.image;
+}
+
+- (void)setHighlightedImage:(UIImage *)highlightedImage {
+    [self willChangeValueForKey:@"highlightedImage"];
+    contentImageView_.highlightedImage = highlightedImage;
+    [self didChangeValueForKey:@"highlightedImage"];
+}
+
+- (UIImage *)highlightedImage {
+    return contentImageView_.highlightedImage;
 }
 
 #pragma mark - Status Methods
